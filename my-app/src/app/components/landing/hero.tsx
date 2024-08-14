@@ -4,7 +4,7 @@ const hero = () => {
   return (
     <div className="flex items-center justify-between h-screen bg-teal1">
       {/* Left */}
-      <div className="text-white flex flex-col gap-5 lg:ml-28 mx-10 w-full lg:w-[40%]">
+      <div className="text-white flex flex-col gap-7 lg:ml-28 mx-10 w-full lg:w-[40%]">
         {/* Slogan */}
         <div className="font-bold lg:text-5xl text-4xl">
           Map Your Knowledge, Master Your Mind.
