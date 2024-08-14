@@ -19,9 +19,9 @@ const testimony = () => {
   return (
     <div className="bg-white flex flex-col gap-5 w-full items-center">
       {/* Title */}
-      <div className="text-3xl font-bold">Testimonials</div>
+      <div className="text-3xl font-bold mx-6">Testimonials</div>
       {/* Description */}
-      <div className="text-lg text-gray-500">
+      <div className="text-lg text-gray-500 mx-6">
         Hear what our users have to say about Flashcard App.
       </div>
       {/* User feedback */}
