@@ -1,7 +1,7 @@
 const Signup = () => {
 
   return (
-    <div className="flex h-screen items-center justify-center bg-teal1">
+    <div className="flex h-screen items-center justify-center bg-teal2">
       <div className="p-5 md:p-10 rounded-md block ml-[10%] mr-[10%] bg-slate-50 drop-shadow-md">
       <h1 className="text-md md:text-2xl">Sign Up</h1>
         <form action="/api/signup" method="POST" className="p-2">
