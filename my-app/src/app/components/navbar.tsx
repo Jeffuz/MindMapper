@@ -76,10 +76,10 @@ const Navbar = () => {
             } bg-teal3 absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out lg:mt-0 lg:p-0 lg:top-0 lg:relative lg:bg-transparent lg:w-auto lg:opacity-100 lg:translate-x-0 lg:flex lg:items-center`}
           >
             {/* valid auth ? profile icon/dashboard/creation : sign in/up */}
-            <button className="flex items-center mt-4 lg:mt-0 text-white hover:text-orange1/80 px-4 py-2 rounded-md transition duration-300">
+            <button className="flex items-center mt-4 lg:mt-0 text-white hover:bg-white hover:text-orange1/80 px-4 py-2 rounded-md transition duration-300">
               <Link href="/signin">Sign In</Link>
             </button>
-            <button className="flex items-center mt-4 lg:mt-0 text-white bg-orange1 hover:bg-orange1/80 px-4 py-2 rounded-md transition duration-300">
+            <button className="flex items-center mt-4 lg:mt-0 text-white bg-orange1 hover:bg-orange1/80 px-4 py-2 rounded-md transition duration-300 shadow-lg">
               <Link href="/signup">Sign Up</Link>
             </button>
           </div>
