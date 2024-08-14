@@ -38,7 +38,7 @@ const pricing = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-5 w-full items-center bg-teal2 pt-20">
+    <div className="flex flex-col gap-5 w-full items-center bg-teal2 py-20">
       <div className="text-3xl font-bold mx-6">Pricing</div>
       <div className="text-lg text-gray-900 mx-6">
         Choose the plan that fits your needs and budget.

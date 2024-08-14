@@ -3,6 +3,8 @@ import Hero from "./components/landing/hero";
 import Testimony from "./components/landing/testimony";
 import Features from "./components/landing/features";
 import Pricing from "./components/landing/pricing";
+import Why from "./components/landing/why";
+import Footer from "./components/footer";
 
 export default function Home() {
   return (
@@ -13,6 +15,8 @@ export default function Home() {
         <Testimony />
         <Features />
         <Pricing />
+        <Why/>
+        <Footer/>
       </div>
     </>
   );
