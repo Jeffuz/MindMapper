@@ -3,10 +3,13 @@ const pricing = () => {
   const pricingTiers = [
     {
       tier: "Free",
-      price: "$0.00",
+      price: "$0",
       description: "Get started for free",
-      features: ["Access to basic features", "Limited flashcard decks"],
-      status: "Sign Up"
+      features: [
+        "Limited flashcard decks",
+        "Basic AI-generated flashcards",
+      ],
+      status: "Sign Up",
     },
     {
       tier: "Basic",
@@ -15,9 +18,9 @@ const pricing = () => {
       features: [
         "Unlimited flashcards",
         "Detailed progress tracking",
-        "Basic AI-generated flashcards",
+        "High quality AI-generated flashcards",
       ],
-      status: "Subscribe"
+      status: "Subscribe",
     },
     {
       tier: "Pro",
@@ -25,11 +28,12 @@ const pricing = () => {
       description: "Unlock maximum features",
       features: [
         "Create unlimited flashcards",
+        "High quality AI-generated flashcards",
         "Advanced analytics and progress insights",
         "AI-generated flashcards based on your content",
         "Early access to new features",
       ],
-      status: "Subscribe"
+      status: "Subscribe",
     },
   ];
 
@@ -39,7 +43,7 @@ const pricing = () => {
       <div className="text-lg text-gray-900 mx-6">
         Choose the plan that fits your needs and budget.
       </div>
-      <div className="grid lg:grid-cols-3 grid-cols-1 gap-5 md:mx-28 mx-6">
+      <div className="grid lg:grid-cols-3 grid-cols-1 gap-5 md:mx-28 mx-6 mt-5">
         {pricingTiers.map((price, index) => (
           <Pricing_cards
             key={index}

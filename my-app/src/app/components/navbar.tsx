@@ -79,7 +79,7 @@ const Navbar = () => {
             <button className="flex items-center mt-4 lg:mt-0 text-white hover:bg-white hover:text-orange1/80 px-4 py-2 rounded-md transition duration-300">
               <Link href="/signin">Sign In</Link>
             </button>
-            <button className="flex items-center mt-4 lg:mt-0 text-white bg-orange1 hover:bg-orange1/80 px-4 py-2 rounded-md transition duration-300">
+            <button className="flex items-center mt-4 lg:mt-0 text-white bg-orange1 hover:bg-orange1/80 px-4 py-2 rounded-md transition duration-300 shadow-lg">
               <Link href="/signup">Sign Up</Link>
             </button>
           </div>

@@ -48,7 +48,7 @@ const PricingCards: React.FC<PricingCardProps> = ({
       </div>
       {/* button */}
       <div>
-        <button className="bg-orange1 hover:bg-orange1/80 text-white transition duration-500 py-3 px-8 rounded-md">
+        <button className="bg-orange1 hover:bg-orange1/80 text-white transition duration-500 py-3 px-8 rounded-md shadow-lg">
           {status}
         </button>
       </div>

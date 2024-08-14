@@ -32,7 +32,7 @@ const features = () => {
         Discover how MindMapper can help you learn and grow.
       </div>
       {/* User feedback */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:mx-28 mx-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:mx-28 mx-6 mt-5">
         {features.map((feature, index) => (
           <Features_cards
             symbol={feature.symbol}
