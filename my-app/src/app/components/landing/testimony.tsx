@@ -1,9 +1,9 @@
 
 
-const testimony = () => {
+const Testimony = () => {
   return (
     <div>testimony</div>
   )
 }
 
-export default testimony
+export default Testimony
