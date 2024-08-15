@@ -10,7 +10,10 @@ export async function POST(request: Request) {
   const password = String(body.password);
 
   const result = await createNewUser(firebaseAuth, email, password);
-  
+
+  if ("errorCode" in result)
+    return Response.json({error: result.errorMessage}, {status: 200, statusText: result.errorMessage})
+
   return Response.json({}, {status: 200})
 
 }

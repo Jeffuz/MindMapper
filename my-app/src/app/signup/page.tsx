@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'
 import Navbar from '../components/navbar';
 import Link from '../../../node_modules/next/link';
 import Footer from '../components/footer';
 
 const Signup = () => {
-
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -32,8 +33,8 @@ const Signup = () => {
 
   const handleSubmit = async (e:any) => {
     e.preventDefault()
-    console.log(isValidEmail(email), isValidPassword(password));
-    
+    setIsError(false)
+
     if (!isValidEmail(email)) {
       setError("Input emailed is not valid")
       setIsError(true)
@@ -63,7 +64,13 @@ const Signup = () => {
       })
     })
     .then(response => response.json())
-    .then(data => console.log(data))
+    .then(data => {
+      if("error" in data) {
+        setIsError(true)
+        setError(data.error)
+      } else 
+        router.push("/signin")
+    })
   }
 
   return (
@@ -79,7 +86,7 @@ const Signup = () => {
             <div className="text-4xl font-bold mb-6">
               Sign up for MindMapper
             </div>
-            <form onClick={handleSubmit}>
+            <form>
               {/* Email */}
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -126,7 +133,7 @@ const Signup = () => {
               {/* Button */}
               <div className="flex items-center justify-between">
                 <button
-                  type="submit"
+                  onClick={handleSubmit}
                   className="bg-orange1 hover:bg-orange2 text-white font-bold w-full py-2 rounded-md shadow-lg transition duration-500"
                 >
                   Sign Up
