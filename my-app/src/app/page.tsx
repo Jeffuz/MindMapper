@@ -10,7 +10,7 @@ import Footer from "./components/footer";
 export default function Home() {
   return (
     <>
-      <Navbar />
+      <Navbar role={"fixed"} />
       <div className="flex flex-col gap-20">
         <Hero />
         <Testimony />

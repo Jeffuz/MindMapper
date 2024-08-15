@@ -3,11 +3,11 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const Navbar = () => {
+const Navbar = ({role}: any) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="shadow-lg bg-teal3 w-full fixed">
+    <div className={`shadow-lg bg-teal3 w-full ${role}`}>
       <div className="container px-6 py-4 mx-auto">
         <div className="lg:flex lg:items-center lg:justify-between">
           <div className="flex items-center justify-between">
