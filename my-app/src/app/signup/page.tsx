@@ -27,8 +27,19 @@ const Signup = () => {
     return true
   }
 
-  const handleSubmit = (e:any) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault()
+
+    await fetch("/api/wishlist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({test: "TEST SDSTRNGr"})
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+
     console.log(isValidEmail(email), isValidPassword(password));
     
     if (!isValidEmail(email)) {
@@ -65,7 +76,7 @@ const Signup = () => {
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} 
           name="password" className="text-[10px] md:text-lg block pl-1 w-full rounded-sm border-[1px] border-orange1"/>
           <br/>
-          
+
           <label for="confirmPassword" className="lg:text-lg text-sm block">Confirm Password</label>
           <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} 
           name="confirmPassword" className="text-[10px] md:text-lg block pl-1 w-full rounded-sm border-[1px] border-orange1"/>
