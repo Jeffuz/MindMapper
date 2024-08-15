@@ -60,7 +60,6 @@ export default function Hero() {
       setIsLoad(false)
       setIsSuccess(true)
     })
-    console.log(email)
   }
 
   return (
