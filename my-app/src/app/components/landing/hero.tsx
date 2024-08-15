@@ -12,15 +12,30 @@ const hero = () => {
         {/* Description */}
         <div className="lg:text-xl text-lg">
           MindMapper is an AI-powered platform that helps you master any
-          subject, from vocabulary to history to science.
+          subject, from vocabulary to history to science. 
+        </div>
+        <div className="text-md font-lg text-orange1">
+          Be the first to know when we launch! Join the waitlist and get early access.
         </div>
         {/* CTA */}
-        <div className="flex gap-5">
-          <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
+        <div className="flex gap-5 md:flex-row flex-col">
+          {/* Add Back after app is realeased */}
+
+          {/* <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
             Get Started
           </button>
           <button className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md">
             Learn More
+          </button> */}
+
+          {/* Waitlist */}
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className="bg-white text-gray-900 w-full placeholder-gray-500 focus:outline-none focus:ring-2 shadow-lg focus:ring-orange1 focus:border-transparent rounded-md py-3 px-4 flex"
+          />
+          <button className="bg-orange1 hover:bg-orange1/80 text-white px-4 py-2 transition duration-500 rounded-md shadow-lg">
+            Join&nbsp;Waitlist
           </button>
         </div>
       </div>
