@@ -8,9 +8,12 @@ import Footer from '../components/footer';
 
 const Signup = () => {
   const router = useRouter()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+
+  const [isLoading, setIsLoading] = useState(false)
 
   const [error, setError] = useState("")
   const [isError, setIsError] = useState(false)
@@ -34,6 +37,7 @@ const Signup = () => {
   const handleSubmit = async (e:any) => {
     e.preventDefault()
     setIsError(false)
+    setIsLoading(true)
 
     if (!isValidEmail(email)) {
       setError("Input emailed is not valid")
@@ -131,12 +135,13 @@ const Signup = () => {
                 {isError ? (<p className='text-[7px] md:text-[15px] text-red-500 transition-all duration-200 animate-bounce'>{error}</p>) : null}
               </div>
               {/* Button */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-center">
+                
                 <button
                   onClick={handleSubmit}
                   className="bg-orange1 hover:bg-orange2 text-white font-bold w-full py-2 rounded-md shadow-lg transition duration-500"
                 >
-                  Sign Up
+                  { isLoading ? (<div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />) : (<p>Sign Up</p>) }
                 </button>
               </div>
               {/* Sign in */}
