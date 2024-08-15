@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState } from 'react';
 
-const hero = () => {
+export default function Hero() {
   const [email, setEmail] = useState("")
   const [isError, setIsError] = useState(false)
   const [error, setError] = useState("")
@@ -127,4 +127,3 @@ const hero = () => {
   );
 };
 
-export default hero;
