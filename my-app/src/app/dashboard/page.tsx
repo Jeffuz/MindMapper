@@ -1,9 +1,92 @@
-
+import Navbar from "../components/navbar";
+import Link from "next/link";
+import Deck_card from "../components/dashboard/deck_card";
 
 const dashboard = () => {
-  return (
-    <div>dashboard</div>
-  )
-}
+  const deck = [
+    {
+      title: "Vocabulary",
+      subtitle: "English Vocabulary Words",
+      amount: 120,
+    },
+    {
+      title: "Math Formulas",
+      subtitle: "Common math formulas",
+      amount: 80,
+    },
+    {
+      title: "Biology",
+      subtitle: "Key biology concepts",
+      amount: 150,
+    },
+    {
+      title: "History",
+      subtitle: "Important historical events",
+      amount: 100,
+    },
+    {
+      title: "Vocabulary",
+      subtitle: "English Vocabulary Words",
+      amount: 120,
+    },
+    {
+      title: "Vocabulary",
+      subtitle: "English Vocabulary Words",
+      amount: 120,
+    },
+    {
+      title: "Math Formulas",
+      subtitle: "Common math formulas",
+      amount: 80,
+    },
+    {
+      title: "Biology",
+      subtitle: "Key biology concepts",
+      amount: 150,
+    },
+    {
+      title: "History",
+      subtitle: "Important historical events",
+      amount: 100,
+    },
+    {
+      title: "Vocabulary",
+      subtitle: "English Vocabulary Words",
+      amount: 120,
+    },
+  ];
 
-export default dashboard
+  return (
+    <>
+      <div className="flex flex-col h-screen">
+        <Navbar />  
+        {/* Title + Add Deck */}
+        <div className="flex md:justify-between md:flex-row md:gap-0 gap-5 flex-col w-full p-12">
+          <div className="text-4xl font-bold text-center">Your Decks</div>
+          <div className="flex gap-3">
+            {/* Uncomment went analytics are avaliable */}
+            {/* <button className="bg-teal2 hover:bg-teal2/80 text-white px-8 py-3 rounded-lg shadow-lg transition duration-500">
+              View Analytics
+            </button> */}
+            <button className="bg-orange1 hover:bg-orange1/80 text-white px-8 py-3 rounded-lg shadow-lg transition duration-500">
+              <Link href={"/dashboard/creation"}>Add New Deck</Link>
+            </button>
+          </div>
+        </div>
+        {/* Cards */}
+        <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-5 md:p-12 p-5 pt-0 md:pt-0 overflow-y-scroll">
+          {deck.map((set, index) => (
+            <Deck_card
+              key={index}
+              title={set.title}
+              subtitle={set.subtitle}
+              amount={set.amount}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default dashboard;
