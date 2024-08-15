@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   const waitlistRef = collection(db, 'waitlist');
 
   const q = query(waitlistRef, where("email", "==", body.email));
-  
+
   const querySnapshot = await getDocs(q);
 
   // Waitlist user already exists
@@ -29,6 +29,7 @@ export async function POST(request: Request) {
   } 
   catch (e) {
     console.error(e);
+    return Response.json({message: "Failed To Add to waitlist"}, {status: 200});
   }
 
   return Response.json({message: "Successfully added to waitlist"}, {status: 200});

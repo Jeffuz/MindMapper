@@ -8,6 +8,8 @@ const hero = () => {
   const [error, setError] = useState("")
   const [isSuccess, setIsSuccess] = useState(false)
 
+  const [isLoad, setIsLoad] = useState(false)
+  
   const isValidEmail = (emailString:string) => {
     let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/g
 
@@ -24,7 +26,11 @@ const hero = () => {
       setIsError(true)
       return
     }
+
     // API CALL
+    setIsLoad(true)
+    setIsSuccess(false)
+    setIsError(false)
 
     await fetch("/api/waitlist", {
       method: "POST",
@@ -37,8 +43,7 @@ const hero = () => {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data)
-      
+
       if (!("message" in data)) {
         // Missing Body
         setIsError(true)
@@ -50,7 +55,11 @@ const hero = () => {
 
       setIsSuccess(true)
     })
-  
+    .finally(() => {
+      setIsError(false)
+      setIsLoad(false)
+      setIsSuccess(true)
+    })
     console.log(email)
   }
 
@@ -89,9 +98,19 @@ const hero = () => {
             onChange={(e) => setEmail(e.target.value)}
             className="bg-white text-gray-900 w-full placeholder-gray-500 focus:outline-none focus:ring-2 shadow-lg focus:ring-orange1 focus:border-transparent rounded-md py-3 px-4 flex"
           />
-          <button onClick={handleJoinWaitlist} className="bg-orange1 hover:bg-orange1/80 text-white px-4 py-2 transition duration-500 rounded-md shadow-lg">
-            Join&nbsp;Waitlist
+          <button onClick={handleJoinWaitlist} 
+          className="bg-orange1 hover:bg-orange1/80 text-white px-4 py-2 transition duration-500 rounded-md shadow-lg">
+            { isLoad ? (<div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />) : (<p>Join&nbsp;Waitlist</p>) }
           </button>
+
+          
+        </div>
+        <div>
+          {isSuccess ? (<p className='text-[10px] md:text-[25px] text-white transition-all duration-200 animate-bounce-short'>
+            You have successfully been added to the waitlist
+          </p>) : (null)}
+
+          {isError ? (<p className='text-[7px] md:text-[15px] text-red-500 transition-all duration-200 animate-bounce-short'>{error}</p>) : null}
         </div>
       </div>
       {/* Right */}

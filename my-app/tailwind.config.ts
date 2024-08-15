@@ -21,6 +21,10 @@ const config: Config = {
         orange2: "#FFA07A",
         orange3: "#FF4500",
       },
+      animation: {
+        // Bounces 5 times 1s equals 5 seconds
+        'bounce-short': 'bounce 1s ease-in-out 5'
+      }
     },
   },
   plugins: [],
