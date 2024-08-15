@@ -1,67 +1,63 @@
-'use client'
+"use client";
 import Image from "next/image";
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function Hero() {
-  const [email, setEmail] = useState("")
-  const [isError, setIsError] = useState(false)
-  const [error, setError] = useState("")
-  const [isSuccess, setIsSuccess] = useState(false)
+  const [email, setEmail] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const [isLoad, setIsLoad] = useState(false)
-  
-  const isValidEmail = (emailString:string) => {
-    let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/g
+  const [isLoad, setIsLoad] = useState(false);
 
-    if (!regex.test(emailString))
-      return false      
+  const isValidEmail = (emailString: string) => {
+    let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/g;
 
-    return true
-  }
+    if (!regex.test(emailString)) return false;
+
+    return true;
+  };
 
   const handleJoinWaitlist = async () => {
-
     if (!isValidEmail(email)) {
-      setError("Input emailed is not valid")
-      setIsError(true)
-      return
+      setError("Input emailed is not valid");
+      setIsError(true);
+      return;
     }
 
     // API CALL
-    setIsLoad(true)
-    setIsSuccess(false)
-    setIsError(false)
+    setIsLoad(true);
+    setIsSuccess(false);
+    setIsError(false);
 
     await fetch("/api/waitlist", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: email
+        email: email,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!("message" in data)) {
+          // Missing Body
+          setIsError(true);
+          setIsSuccess(false);
+          setError("Missing Body Data");
+          return;
+        }
+
+        setIsSuccess(true);
       })
-    })
-    .then(response => response.json())
-    .then(data => {
-
-      if (!("message" in data)) {
-        // Missing Body
-        setIsError(true)
-        setIsSuccess(false)
-        setError("Missing Body Data")
-        return
-      }
-
-
-      setIsSuccess(true)
-    })
-    .finally(() => {
-      setIsError(false)
-      setIsLoad(false)
-      setIsSuccess(true)
-    })
-    console.log(email)
-  }
+      .finally(() => {
+        setIsError(false);
+        setIsLoad(false);
+        setIsSuccess(true);
+      });
+    console.log(email);
+  };
 
   return (
     <div className="flex items-center justify-between h-screen bg-teal1">
@@ -74,10 +70,11 @@ export default function Hero() {
         {/* Description */}
         <div className="lg:text-xl text-lg">
           MindMapper is an AI-powered platform that helps you master any
-          subject, from vocabulary to history to science. 
+          subject, from vocabulary to history to science.
         </div>
         <div className="text-md font-lg text-orange1">
-          Be the first to know when we launch! Join the waitlist and get early access.
+          Be the first to know when we launch! Join the waitlist and get early
+          access.
         </div>
         {/* CTA */}
         <div className="flex gap-5 md:flex-row flex-col">
@@ -98,19 +95,30 @@ export default function Hero() {
             onChange={(e) => setEmail(e.target.value)}
             className="bg-white text-gray-900 w-full placeholder-gray-500 focus:outline-none focus:ring-2 shadow-lg focus:ring-orange1 focus:border-transparent rounded-md py-3 px-4 flex"
           />
-          <button onClick={handleJoinWaitlist} 
-          className="bg-orange1 hover:bg-orange1/80 text-white px-4 py-2 transition duration-500 rounded-md shadow-lg">
-            { isLoad ? (<div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />) : (<p>Join&nbsp;Waitlist</p>) }
+          <button
+            onClick={handleJoinWaitlist}
+            className="bg-orange1 hover:bg-orange1/80 text-white px-4 py-2 transition duration-500 rounded-md shadow-lg"
+          >
+            {isLoad ? (
+              <div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />
+            ) : (
+              <p>Join&nbsp;Waitlist</p>
+            )}
           </button>
-
-          
         </div>
+        {/* Submission for waitlist */}
         <div>
-          {isSuccess ? (<p className='text-[10px] md:text-[25px] text-white transition-all duration-200 animate-bounce-short'>
-            You have successfully been added to the waitlist
-          </p>) : (null)}
+          {isSuccess && (
+            <p className="text-sm md:text-md text-white font-bold transition-all duration-200">
+              You have successfully been added to the waitlist
+            </p>
+          )}
 
-          {isError ? (<p className='text-[7px] md:text-[15px] text-red-500 transition-all duration-200 animate-bounce-short'>{error}</p>) : null}
+          {isError && (
+            <p className="text-sm md:text-md text-red-500 font-bold transition-all duration-200">
+              {error}
+            </p>
+          )}
         </div>
       </div>
       {/* Right */}
@@ -125,5 +133,4 @@ export default function Hero() {
       </div>
     </div>
   );
-};
-
+}
