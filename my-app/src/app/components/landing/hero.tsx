@@ -1,6 +1,59 @@
+'use client'
 import Image from "next/image";
+import { useState } from 'react';
 
 const hero = () => {
+  const [email, setEmail] = useState("")
+  const [isError, setIsError] = useState(false)
+  const [error, setError] = useState("")
+  const [isSuccess, setIsSuccess] = useState(false)
+
+  const isValidEmail = (emailString:string) => {
+    let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/g
+
+    if (!regex.test(emailString))
+      return false      
+
+    return true
+  }
+
+  const handleJoinWaitlist = async () => {
+
+    if (!isValidEmail(email)) {
+      setError("Input emailed is not valid")
+      setIsError(true)
+      return
+    }
+    // API CALL
+
+    await fetch("/api/waitlist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      
+      if (!("message" in data)) {
+        // Missing Body
+        setIsError(true)
+        setIsSuccess(false)
+        setError("Missing Body Data")
+        return
+      }
+
+
+      setIsSuccess(true)
+    })
+  
+    console.log(email)
+  }
+
   return (
     <div className="flex items-center justify-between h-screen bg-teal1">
       {/* Left */}
@@ -32,9 +85,11 @@ const hero = () => {
           <input
             type="email"
             placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="bg-white text-gray-900 w-full placeholder-gray-500 focus:outline-none focus:ring-2 shadow-lg focus:ring-orange1 focus:border-transparent rounded-md py-3 px-4 flex"
           />
-          <button className="bg-orange1 hover:bg-orange1/80 text-white px-4 py-2 transition duration-500 rounded-md shadow-lg">
+          <button onClick={handleJoinWaitlist} className="bg-orange1 hover:bg-orange1/80 text-white px-4 py-2 transition duration-500 rounded-md shadow-lg">
             Join&nbsp;Waitlist
           </button>
         </div>
