@@ -211,7 +211,7 @@ const Creation = () => {
         {/* Add Card */}
         <button
           onClick={handleAddCard}
-          className="w-full flex justify-center items-center py-5 bg-teal1 text-white rounded-lg shadow-lg hover:bg-teal1/90 transition duration-500"
+          className="font-bold w-full flex justify-center items-center py-5 bg-teal1 text-white rounded-lg shadow-lg hover:bg-teal1/90 transition duration-500"
         >
           + Add Card
         </button>
