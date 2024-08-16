@@ -14,6 +14,8 @@ import pc from "../../../utils/pinecone";
 import { v4 as uuidv4 } from "uuid";
 
 const dataCleanUp = (pageContent: string) => {
+  console.log("Starting data cleanup...");
+
   // load html data
   const $ = cheerio.load(pageContent);
   // remove tags
@@ -21,12 +23,18 @@ const dataCleanUp = (pageContent: string) => {
   // get clean data
   const cleanedData = $.text();
   // remove white space and ascii
-  return cleanedData.replace(/[\x00-\x1F\x7F-\x9F]/g, "").trim();
+  const finalCleanedData = cleanedData
+    .replace(/[\x00-\x1F\x7F-\x9F]/g, "")
+    .trim();
+
+  console.log("Data cleanup completed.");
+  return finalCleanedData;
 };
 
 export async function POST(request: Request) {
   try {
     const { url } = await request.json();
+    console.log(`Received URL: ${url}`);
 
     // Webscrape website data
     const loader = new PuppeteerWebBaseLoader(url, {
@@ -35,14 +43,16 @@ export async function POST(request: Request) {
       },
       async evaluate(page: puppeteer.Page, browser: puppeteer.Browser) {
         try {
+          console.log("Starting web scraping...");
           // open link
           await page.goto(url);
-          //   return body or empty string
+          // return body or empty string
           const textContent = await page.evaluate(() => {
             const bodyElement = document.querySelector("body");
             return bodyElement ? bodyElement.textContent : "";
           });
-          //  return content , else empty
+
+          console.log("Web scraping completed.");
           return textContent || "";
         } catch (error) {
           console.error("Error occurred while loading the page: ", error);
@@ -57,6 +67,7 @@ export async function POST(request: Request) {
 
     const docs = await loader.load();
     const pageContent = docs[0].pageContent;
+    console.log("Page content loaded.");
 
     // Data clean up (remove html keep raw data)
     const cleanContent = dataCleanUp(pageContent);
@@ -67,18 +78,19 @@ export async function POST(request: Request) {
       chunkOverlap: 50, // # of char that overlap between chunks
     });
 
-    // Split cleaned content into chunks based on init
+    // Split cleaned content into chunks
     const splitContent = await splitter.splitDocuments([
       new Document({ pageContent: cleanContent }),
     ]);
+    console.log("Content split into chunks.");
 
-    // Initalize vector embedding
+    // Initialize vector embedding
     const embeddings = new OpenAIEmbeddings({
       apiKey: process.env.OPEN_AI_KEY!,
       model: "text-embedding-3-large",
     });
 
-    // Call index for pinecone
+    // Call index for Pinecone
     const index = pc.Index("mindmapper");
 
     /** 
@@ -104,12 +116,13 @@ export async function POST(request: Request) {
         };
       })
     );
+    console.log("All embeddings created.");
 
     // Batch upsert
     await index.upsert(vectorContent);
+    console.log("Succesfully updated to database...");
 
     return Response.json({
-      message: "Successful",
       content: vectorContent,
     });
   } catch (error: any) {

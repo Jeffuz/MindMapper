@@ -59,10 +59,15 @@ const Creation = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ url: content }),
       });
 
-      await response.json();
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
       setUrl("");
       setPdf("");
       setText("");
@@ -87,10 +92,16 @@ const Creation = () => {
                 type="text"
                 placeholder="Enter a URL"
                 className="appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-b-2 w-full"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
               />
             </div>
-            <button className="bg-orange1 hover:bg-orange1/80 w-full py-3 shadow-lg rounded-lg text-white transition duration-500">
-              Submit Url
+            <button
+              className="bg-orange1 hover:bg-orange1/80 w-full py-3 shadow-lg rounded-lg text-white transition duration-500"
+              onClick={(e) => handleSubmit(e, "url", url)}
+              disabled={isLoading}
+            >
+              {isLoading ? "Processing..." : "Submit URL"}
             </button>
           </div>
         );
