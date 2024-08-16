@@ -15,6 +15,7 @@ const Creation = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   // GenAI Modal
   const [openGenModal, setOpenGenModal] = useState<boolean>(false);
+  const [cardAmount, setCardAmount] = useState(1);
   // Tabs for Rag Modal
   const [activeTab, setActiveTab] = useState("url"); // states for ai gen modal rag implementation
 
@@ -51,6 +52,46 @@ const Creation = () => {
   const handleDeleteCard = (index: number) => {
     const newCards = cards.filter((_, i) => i !== index);
     setCards(newCards);
+  };
+
+  // Generate cards with AI
+  const handleGenerateCards = async () => {
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/genCards", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: title,
+          description: description,
+          cardAmount: cardAmount,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      setSuccessMessage("Flashcards generated successfully!");
+      setErrorMessage(null);
+      setOpenGenModal(false);
+
+      console.log(result.flashcards);
+    } catch (error) {
+      setSuccessMessage(null);
+      setErrorMessage("Failed to generate flashcards. Please try again.");
+    } finally {
+      setIsLoading(false);
+      setTimeout(() => {
+        setSuccessMessage(null);
+        setErrorMessage(null);
+      }, 8000);
+    }
   };
 
   // Submit Content
@@ -286,10 +327,16 @@ const Creation = () => {
                 type="number"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-orange1 focus:border-orange1 transition duration-300"
                 placeholder={"Enter the number"}
+                value={cardAmount}
+                onChange={(e) => setCardAmount(Number(e.target.value))}
               />
               {/* Button to submit */}
-              <button className="w-full bg-orange1 hover:bg-orange1/80 text-white py-3 rounded-md shadow-lg transition duration-500">
-                Generate Flashcards
+              <button
+                onClick={handleGenerateCards}
+                disabled={isLoading}
+                className="w-full bg-orange1 hover:bg-orange1/80 text-white py-3 rounded-md shadow-lg transition duration-500"
+              >
+                {isLoading ? "Generating..." : "Generate Flashcards"}
               </button>
               {/* Upgrade Prompt */}
               <div className="text-center text-gray-500 text-xs">
