@@ -4,11 +4,15 @@ import { useState } from "react";
 import Navbar from "../components/navbar";
 import Link from "../../../node_modules/next/link";
 import Footer from "../components/footer";
+import { useRouter } from 'next/navigation';
 
 const Signin = () => {
+  const router = useRouter()
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("");
   const [isError, setIsError] = useState(false);
 
@@ -30,17 +34,8 @@ const Signin = () => {
     e.preventDefault();
     console.log(isValidEmail(email), isValidPassword(password));
 
-    if (!isValidEmail(email)) {
-      setError("Input emailed is not valid");
-      setIsError(true);
-      return;
-    }
-    if (!isValidPassword(password)) {
-      setError("Password does not meet criteria");
-      setIsError(true);
-      return;
-    }
 
+    setIsLoading(true)
     // API Call
     await fetch("/api/signin", {
       method: "POST",
@@ -53,7 +48,18 @@ const Signin = () => {
       }),
     })
       .then((response) => response.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        console.log(data);
+        
+        if("message" in data) {
+          setIsError(true)
+          setError(data.message)
+          setIsLoading(false)
+          
+        } 
+        else
+          router.push("/dashboard");
+      });
   };
 
   return (
@@ -109,7 +115,7 @@ const Signin = () => {
                   type="submit"
                   className="bg-orange1 hover:bg-orange2 text-white font-bold w-full py-2 rounded-md shadow-lg transition duration-500"
                 >
-                  Sign In
+                  { isLoading ? (<div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />) : (<p>Sign In</p>) }
                 </button>
               </div>
               {/* Sign in */}

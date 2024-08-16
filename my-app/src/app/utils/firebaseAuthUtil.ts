@@ -21,7 +21,7 @@ export async function createNewUser(auth: any, email: string, password: string) 
 }
 
 export async function signInUser(auth: any, email: string, password: string) {
-  await signInWithEmailAndPassword(auth, email, password)
+  return await signInWithEmailAndPassword(auth, email, password)
   .then((userCredential: any) => {
     const user = userCredential.user;
     

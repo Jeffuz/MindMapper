@@ -37,7 +37,6 @@ const Signup = () => {
   const handleSubmit = async (e:any) => {
     e.preventDefault()
     setIsError(false)
-    setIsLoading(true)
 
     if (!isValidEmail(email)) {
       setError("Input emailed is not valid")
@@ -56,6 +55,7 @@ const Signup = () => {
       return
     }
 
+    setIsLoading(true)
     // API Call
     await fetch("/api/signup", {
       method: "POST",
@@ -72,9 +72,11 @@ const Signup = () => {
       if("error" in data) {
         setIsError(true)
         setError(data.error)
-      } else 
+        setIsLoading(false)
+      } 
+      else 
         router.push("/signin")
-    })
+    });
   }
 
   return (
