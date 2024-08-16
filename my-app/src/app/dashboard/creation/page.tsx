@@ -14,7 +14,7 @@ const Creation = () => {
 
   // Content
   const [url, setUrl] = useState(""); // url state input
-  const [pdf, setPdf] = useState(""); // pdf state input
+  const [pdf, setPdf] = useState<File | null>(null); // Allow the state to hold a File or null
   const [text, setText] = useState(""); // text state input
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -50,21 +50,40 @@ const Creation = () => {
   // Submit Content
   const handleSubmit = async (
     e: FormEvent,
-    element: string, // url, pdf, text
-    content: string // user input
+    element: string, // "url", "pdf", "text"
+    content: string | File | null // user input or file
   ) => {
     e.preventDefault();
+    // No Content
+    if (!content) {
+      setErrorMessage("No content provided.");
+      return;
+    }
+
     // Start loading
     setIsLoading(true);
 
     try {
-      const response = await fetch(`/api/rag/${element}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ [element]: content }),
-      });
+      let response;
+      // Post pdf
+      if (element === "pdf") {
+        const formData = new FormData();
+        formData.append("file", content as File);
+
+        response = await fetch(`/api/rag/pdf`, {
+          method: "POST",
+          body: formData,
+        });
+        // Post url or text
+      } else {
+        response = await fetch(`/api/rag/${element}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ [element]: content }),
+        });
+      }
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.statusText}`);
@@ -76,7 +95,7 @@ const Creation = () => {
       setErrorMessage(null);
       setOpenModal(false);
       setUrl("");
-      setPdf("");
+      setPdf(null);
       setText("");
     } catch (error) {
       console.error(`Failed to submit ${element}:`, error);
@@ -130,13 +149,19 @@ const Creation = () => {
                 type="file"
                 accept="application/pdf"
                 className="appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
+                onChange={(e) => setPdf(e.target.files![0])}
               />
             </div>
-            <button className="bg-orange1 hover:bg-orange1/80 w-full py-3 shadow-lg rounded-lg text-white transition duration-500">
-              Submit PDF
+            <button
+              className="bg-orange1 hover:bg-orange1/80 w-full py-3 shadow-lg rounded-lg text-white transition duration-500"
+              onClick={(e) => handleSubmit(e, "pdf", pdf)}
+              disabled={isLoading || !pdf}
+            >
+              {isLoading ? "Processing..." : "Submit PDF"}
             </button>
           </div>
         );
+
       // Text
       case "text":
         return (
