@@ -4,12 +4,18 @@ import Navbar from "@/app/components/navbar";
 import CreateCard from "@/app/components/dashboard/create_card";
 import Modal from "@/app/components/modal";
 import { FaRegFilePdf, FaLink, FaTextHeight } from "react-icons/fa";
+import { FaBrain } from "react-icons/fa";
+import Link from "next/link";
 
 const Creation = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [cards, setCards] = useState([{ term: "", definition: "" }]);
+  // RAG Modal
   const [openModal, setOpenModal] = useState<boolean>(false);
+  // GenAI Modal
+  const [openGenModal, setOpenGenModal] = useState<boolean>(false);
+  // Tabs for Rag Modal
   const [activeTab, setActiveTab] = useState("url"); // states for ai gen modal rag implementation
 
   // Content
@@ -247,9 +253,55 @@ const Creation = () => {
         </div>
         {/* Modal to Generate cards using LLM */}
         <div className="flex gap-5">
-          <button className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md">
+          <button
+            onClick={() => setOpenGenModal(true)}
+            className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md"
+          >
             Generate with AI
           </button>
+          {/* Generate Cards */}
+          <Modal open={openGenModal} onClose={() => setOpenGenModal(false)}>
+            <div className="flex flex-col justify-center items-center p-5 gap-5 md:w-[500px] w-full">
+              {/* Title */}
+              <label className="font-bold text-2xl">
+                Generate Flashcards with AI
+              </label>
+              {/* Logo*/}
+              <div className="flex justify-center">
+                <FaBrain className="text-orange1 text-4xl" />
+              </div>
+              {/* Info Description */}
+              <div className="text-center text-gray-700 text-sm">
+                Create flashcards instantly with AI. Free users get 20 cards,
+                while Basic and Pro users enjoy unlimited access.
+              </div>
+              {/* Benefits List */}
+              <ul className="list-disc pl-5 text-gray-600 text-sm">
+                <li>Fast & Efficient</li>
+                <li>Personalized Content</li>
+                <li>Unlimited for Premium Users</li>
+              </ul>
+              {/* Input Card Amount */}
+              <input
+                type="number"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-orange1 focus:border-orange1 transition duration-300"
+                placeholder={"Enter the number"}
+              />
+              {/* Button to submit */}
+              <button className="w-full bg-orange1 hover:bg-orange1/80 text-white py-3 rounded-md shadow-lg transition duration-500">
+                Generate Flashcards
+              </button>
+              {/* Upgrade Prompt */}
+              <div className="text-center text-gray-500 text-xs">
+                Need more flashcards?&nbsp;
+                <Link href="/" className="text-orange1 underline">
+                  Upgrade to Basic or Pro
+                </Link>
+                &nbsp;for unlimited access!
+              </div>
+            </div>
+          </Modal>
+
           {/* Upload content restricted to Pro Users */}
           <button
             onClick={() => setOpenModal(true)}
