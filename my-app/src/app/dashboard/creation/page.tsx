@@ -96,28 +96,28 @@ const Creation = () => {
   };
 
   return (
-    <>
+    <div className="bg-teal2/80 min-h-screen">
       <Navbar />
-      <div className="flex flex-col gap-5 m-5">
+      <div className="flex flex-col gap-5 m-5 bg-teal">
         {/* Bar (title + create)*/}
         <div className="flex justify-between md:flex-row flex-col gap-3">
-          <div className="font-bold text-2xl">Create a new flashcard set</div>
+          <div className="font-bold md:text-3xl text-2xl">Create a new flashcard set</div>
           <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
             Create
           </button>
         </div>
         {/* Title, under is description */}
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-3">
           {/* Title */}
           <div className="flex flex-col">
             <input
               type="text"
               placeholder='Enter a title, like "Calculus 1 - Chapter 5: Derivative as a limit."'
-              className="appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-b-2"
+              className="appearance-none py-2 px-3 text-black leading-tight  placeholder-gray-600 focus:outline-none focus:shadow-outline border-b-4 hover:border-b-orange1 focus:border-b-orange1 bg-transparent transition duration-500"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-            <label>Title</label>
+            <label className="tracking-wide">Title</label>
           </div>
 
           {/* Description */}
@@ -125,18 +125,16 @@ const Creation = () => {
             <input
               type="text"
               placeholder="Add a description..."
-              className="appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-b-2"
+              className="appearance-none py-2 px-3 text-black leading-tight  placeholder-gray-600 focus:outline-none focus:shadow-outline border-b-4 hover:border-b-orange1 focus:border-b-orange1 bg-transparent transition duration-500"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
-            <label>Description</label>
+            <label className="tracking-wide">Description</label>
           </div>
         </div>
         {/* Modal to Generate cards using LLM */}
         <div className="flex gap-5">
-          <button
-            className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md"
-          >
+          <button className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md">
             Generate with AI
           </button>
           {/* Upload content restricted to Pro Users */}
@@ -218,13 +216,13 @@ const Creation = () => {
           + Add Card
         </button>
         {/* Create Deck*/}
-        <div className="flex justify-end w-full">
+        <div className="flex justify-end w-full mb-10">
           <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
             Create
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -20,7 +20,7 @@ export default function Modal({
       {/* Modal */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-[#F9FAFB] rounded-xl shadow p-6 transition-all md:w-auto w-screen md:h-auto h-screen ${
+        className={`bg-[#F9FAFB] md:rounded-xl shadow p-6 transition-all md:w-auto w-screen md:h-auto h-screen ${
           open ? "scale-100 opacity-100" : "scale-125 opacity-0"
         }`}
       >
