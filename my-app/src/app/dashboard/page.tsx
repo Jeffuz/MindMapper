@@ -59,7 +59,7 @@ const dashboard = () => {
   return (
     <>
       <div className="flex flex-col h-screen">
-        <Navbar />  
+        <Navbar />
         {/* Title + Add Deck */}
         <div className="flex md:justify-between md:flex-row md:gap-0 gap-5 flex-col w-full p-12">
           <div className="text-4xl font-bold text-center">Your Decks</div>

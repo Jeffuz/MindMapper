@@ -23,7 +23,7 @@ const CreateCard = ({
           <FaRegTrashAlt size={25} />
         </button>
       </div>
-      <div className="flex gap-5">
+      <div className="flex md:flex-row flex-col gap-5">
         {/* Text Fields */}
         <div className="flex flex-col w-full gap-2">
           <input

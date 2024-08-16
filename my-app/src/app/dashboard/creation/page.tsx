@@ -2,11 +2,15 @@
 import React, { useState } from "react";
 import Navbar from "@/app/components/navbar";
 import CreateCard from "@/app/components/dashboard/create_card";
+import Modal from "@/app/components/modal";
+import { FaRegFilePdf, FaLink, FaTextHeight } from "react-icons/fa";
 
 const Creation = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [cards, setCards] = useState([{ term: "", definition: "" }]);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState("url"); // states for ai gen modal rag implementation
 
   // Add Card
   const handleAddCard = () => {
@@ -31,6 +35,64 @@ const Creation = () => {
   const handleDeleteCard = (index: number) => {
     const newCards = cards.filter((_, i) => i !== index);
     setCards(newCards);
+  };
+
+  // Tab content
+  const renderTabContent = () => {
+    switch (activeTab) {
+      // URL
+      case "url":
+        return (
+          <div className="flex flex-col justify-between h-full">
+            <div className="flex flex-col gap-5">
+              <div className="text-xl font-bold">Insert URL</div>
+              <input
+                type="text"
+                placeholder="Enter a URL"
+                className="appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-b-2 w-full"
+              />
+            </div>
+            <button className="bg-orange1 hover:bg-orange1/80 w-full py-3 shadow-lg rounded-lg text-white transition duration-500">
+              Submit Url
+            </button>
+          </div>
+        );
+      // PDF
+      case "pdf":
+        return (
+          <div className="flex flex-col justify-between h-full">
+            <div className="flex flex-col gap-5">
+              <div className="text-xl font-bold">Upload PDF</div>
+              <input
+                type="file"
+                accept="application/pdf"
+                className="appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
+              />
+            </div>
+            <button className="bg-orange1 hover:bg-orange1/80 w-full py-3 shadow-lg rounded-lg text-white transition duration-500">
+              Submit PDF
+            </button>
+          </div>
+        );
+      // Text
+      case "text":
+        return (
+          <div className="flex flex-col justify-between h-full">
+            <div className="flex flex-col gap-5">
+              <div className="text-xl font-bold">Insert Text</div>
+              <textarea
+                placeholder="Enter text"
+                className="appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-b-2 w-full"
+              />
+            </div>
+            <button className="bg-orange1 hover:bg-orange1/80 w-full py-3 shadow-lg rounded-lg text-white transition duration-500">
+              Submit Text
+            </button>
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -71,10 +133,68 @@ const Creation = () => {
           </div>
         </div>
         {/* Modal to Generate cards using LLM */}
-        <div className="flex">
-          <button className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md">
+        <div className="flex gap-5">
+          <button
+            className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md"
+          >
             Generate with AI
           </button>
+          {/* Upload content restricted to Pro Users */}
+          <button
+            onClick={() => setOpenModal(true)}
+            className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md"
+          >
+            Upload Content
+          </button>
+          {/* Rag Implementation */}
+          <Modal open={openModal} onClose={() => setOpenModal(false)}>
+            <div className="flex flex-col justify-center items-center p-6 md:w-[500px] aspect-square">
+              <div className="mb-5 font-bold text-2xl">Upload Content</div>
+              {/* Tabs */}
+              <div className="flex overflow-x-auto whitespace-nowrap mb-4 w-full border-b-2">
+                {/* Url Tab */}
+                <button
+                  onClick={() => setActiveTab("url")}
+                  className={`inline-flex items-center h-12 px-2 py-2 text-center border-b-0 border-gray-300 sm:px-4 rounded-t-md -px-1 whitespace-nowrap focus:outline-none transition ${
+                    activeTab === "url"
+                      ? "bg-orange1 text-white"
+                      : "text-gray-700 bg-transparent border-b dark:border-gray-500 hover:border-gray-400"
+                  }`}
+                >
+                  <FaLink className="w-4 h-4 mx-1 sm:w-6 sm:h-6" />
+                  <span className="mx-1 text-sm sm:text-base">URL</span>
+                </button>
+                {/* PDF Tab */}
+                <button
+                  onClick={() => setActiveTab("pdf")}
+                  className={`inline-flex items-center h-12 px-2 py-2 text-center border-b-0 border-gray-300 sm:px-4 rounded-t-md -px-1 whitespace-nowrap focus:outline-none transition ${
+                    activeTab === "pdf"
+                      ? "bg-orange1 text-white"
+                      : "text-gray-700 bg-transparent border-b dark:border-gray-500 hover:border-gray-400"
+                  }`}
+                >
+                  <FaRegFilePdf className="w-4 h-4 mx-1 sm:w-6 sm:h-6" />
+                  <span className="mx-1 text-sm sm:text-base">PDF</span>
+                </button>
+                {/* Text Tab */}
+                <button
+                  onClick={() => setActiveTab("text")}
+                  className={`inline-flex items-center h-12 px-2 py-2 text-center border-b-0 border-gray-300 sm:px-4 rounded-t-md -px-1 whitespace-nowrap focus:outline-none transition ${
+                    activeTab === "text"
+                      ? "bg-orange1 text-white"
+                      : "text-gray-700 bg-transparent border-b dark:border-gray-500 hover:border-gray-400"
+                  }`}
+                >
+                  <FaTextHeight className="w-4 h-4 mx-1 sm:w-6 sm:h-6" />
+                  <span className="mx-1 text-sm sm:text-base">Text</span>
+                </button>
+              </div>
+              {/* Tab Content */}
+              <div className="w-full flex-grow overflow-auto">
+                {renderTabContent()}
+              </div>
+            </div>
+          </Modal>
         </div>
         {/* Display Cards */}
         <div>

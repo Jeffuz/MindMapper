@@ -20,7 +20,7 @@ export default function Modal({
       {/* Modal */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-[#F9FAFB] rounded-xl shadow p-6 transition-all ${
+        className={`bg-[#F9FAFB] rounded-xl shadow p-6 transition-all md:w-auto w-screen md:h-auto h-screen ${
           open ? "scale-100 opacity-100" : "scale-125 opacity-0"
         }`}
       >
@@ -29,7 +29,7 @@ export default function Modal({
           onClick={onClose}
           className="absolute top-2 right-2 p-1 rounded-lg text-gray-400 hover:text-gray-600"
         >
-          <IoClose />
+          <IoClose size={25}/>
         </button>
         {children}
       </div>
