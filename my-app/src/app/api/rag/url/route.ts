@@ -128,7 +128,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error("Error in POST /api/rag/url:", error);
     return Response.json(
-      { message: "Failed to scrape the website", error: error.message },
+      { message: "Failed to process url", error: error.message },
       { status: 500 }
     );
   }

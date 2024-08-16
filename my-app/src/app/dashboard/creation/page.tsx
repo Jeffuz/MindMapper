@@ -18,6 +18,10 @@ const Creation = () => {
   const [text, setText] = useState(""); // text state input
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Messages for Rag response
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   // Add Card
   const handleAddCard = () => {
     setCards([...cards, { term: "", definition: "" }]);
@@ -59,23 +63,34 @@ const Creation = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ url: content }),
+        body: JSON.stringify({ [element]: content }),
       });
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.statusText}`);
       }
 
-      const result = await response.json();
+      await response.json();
 
+      setSuccessMessage("Content submitted successfully!");
+      setErrorMessage(null);
+      setOpenModal(false);
       setUrl("");
       setPdf("");
       setText("");
     } catch (error) {
       console.error(`Failed to submit ${element}:`, error);
+      setSuccessMessage(null);
+      setErrorMessage("Failed to submit content. Please try again.");
+      setOpenModal(false);
     } finally {
       // Stop loading state
       setIsLoading(false);
+      // Remove success or error messages after 8 seconds
+      setTimeout(() => {
+        setSuccessMessage(null);
+        setErrorMessage(null);
+      }, 8000);
     }
   };
 
@@ -131,10 +146,16 @@ const Creation = () => {
               <textarea
                 placeholder="Enter text"
                 className="appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-b-2 w-full"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
               />
             </div>
-            <button className="bg-orange1 hover:bg-orange1/80 w-full py-3 shadow-lg rounded-lg text-white transition duration-500">
-              Submit Text
+            <button
+              onClick={(e) => handleSubmit(e, "text", text)}
+              disabled={isLoading}
+              className="bg-orange1 hover:bg-orange1/80 w-full py-3 shadow-lg rounded-lg text-white transition duration-500"
+            >
+              {isLoading ? "Processing..." : "Submit Text"}
             </button>
           </div>
         );
@@ -147,6 +168,23 @@ const Creation = () => {
     <div className="bg-teal2/80 min-h-screen">
       <Navbar />
       <div className="flex flex-col gap-5 m-5 bg-teal">
+        {/* Success or error message */}
+        {successMessage && (
+          <div
+            className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+            role="alert"
+          >
+            <div className="font-bold">{successMessage}</div>
+          </div>
+        )}
+        {errorMessage && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+            role="alert"
+          >
+            <div className="font-bold">{errorMessage}</div>
+          </div>
+        )}
         {/* Bar (title + create)*/}
         <div className="flex justify-between md:flex-row flex-col gap-3">
           <div className="font-bold md:text-3xl text-2xl">
