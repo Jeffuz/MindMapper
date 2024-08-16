@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import Navbar from "@/app/components/navbar";
 import CreateCard from "@/app/components/dashboard/create_card";
 import Modal from "@/app/components/modal";
@@ -11,6 +11,12 @@ const Creation = () => {
   const [cards, setCards] = useState([{ term: "", definition: "" }]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState("url"); // states for ai gen modal rag implementation
+
+  // Content
+  const [url, setUrl] = useState(""); // url state input
+  const [pdf, setPdf] = useState(""); // pdf state input
+  const [text, setText] = useState(""); // text state input
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Add Card
   const handleAddCard = () => {
@@ -35,6 +41,37 @@ const Creation = () => {
   const handleDeleteCard = (index: number) => {
     const newCards = cards.filter((_, i) => i !== index);
     setCards(newCards);
+  };
+
+  // Submit Content
+  const handleSubmit = async (
+    e: FormEvent,
+    element: string, // url, pdf, text
+    content: string // user input
+  ) => {
+    e.preventDefault();
+    // Start loading
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`/api/rag/${element}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      await response.json();
+      setUrl("");
+      setPdf("");
+      setText("");
+    } catch (error) {
+      console.error(`Failed to submit ${element}:`, error);
+    } finally {
+      // Stop loading state
+      setIsLoading(false);
+    }
   };
 
   // Tab content
@@ -101,7 +138,9 @@ const Creation = () => {
       <div className="flex flex-col gap-5 m-5 bg-teal">
         {/* Bar (title + create)*/}
         <div className="flex justify-between md:flex-row flex-col gap-3">
-          <div className="font-bold md:text-3xl text-2xl">Create a new flashcard set</div>
+          <div className="font-bold md:text-3xl text-2xl">
+            Create a new flashcard set
+          </div>
           <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
             Create
           </button>
