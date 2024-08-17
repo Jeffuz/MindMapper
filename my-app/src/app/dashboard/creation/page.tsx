@@ -1,11 +1,13 @@
 "use client";
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import Navbar from "@/app/components/navbar";
 import CreateCard from "@/app/components/dashboard/create_card";
 import Modal from "@/app/components/modal";
 import { FaRegFilePdf, FaLink, FaTextHeight } from "react-icons/fa";
 import { FaBrain } from "react-icons/fa";
 import Link from "next/link";
+import IsUserAuthenticated from "@/app/utils/authenticateUser";
+import { useRouter } from 'next/navigation';
 
 const Creation = () => {
   const [title, setTitle] = useState("");

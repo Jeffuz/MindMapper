@@ -1,6 +1,6 @@
-import { collection, doc, addDoc, query, setDoc, where } from "firebase/firestore";
-import { ICardDeck, ICardData } from '../../../../apiInterface/ICardDeck';
 import db from "@/app/utils/firestore";
+import { addDoc, collection } from "firebase/firestore";
+import { ICardDeck } from '../../../../apiInterface/ICardDeck';
 
 export async function POST(request: Request) {
   const body = await request.json();
