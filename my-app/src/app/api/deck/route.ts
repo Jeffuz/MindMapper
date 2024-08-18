@@ -2,6 +2,7 @@ import db from "@/app/utils/firestore";
 import { addDoc, collection } from "firebase/firestore";
 import { ICardDeck } from '../../../../apiInterface/ICardDeck';
 
+// CREATE CARD DECK FROM FOR USER
 export async function POST(request: Request) {
   const body = await request.json();
   console.log("called")

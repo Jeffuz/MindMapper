@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
-import { getAuth, setPersistence, browserLocalPersistence   } from "firebase/auth";
+import { getAuth, setPersistence, browserSessionPersistence, onAuthStateChanged   } from "firebase/auth";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -19,6 +19,19 @@ const firebaseConfig = {
 export const firebaseApp = initializeApp(firebaseConfig);
 
 export const firebaseAuth = getAuth(firebaseApp);
-setPersistence(firebaseAuth, browserLocalPersistence);
+setPersistence(firebaseAuth, browserSessionPersistence);
+onAuthStateChanged(firebaseAuth, (user) => {
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/auth.user
+    const uid = user.uid;
+    console.log(uid, "Logged In");
+    
+    // ...
+  } else {
+    // User is signed out
+    // ...
+  }
+});
 
 isSupported().then((_)=>{ const analytics = getAnalytics(firebaseApp)}).catch((e)=>console.warn("Analytics is not supported in this environment.",e.message))

@@ -9,6 +9,8 @@ const CreateCard = ({
   handleDefinitionChange,
   handleDeleteCard,
 }: any) => {
+  console.log("Creating Card with", term, definition);
+  
   return (
     <div className="flex flex-col gap-3 p-5 bg-teal1 rounded-lg shadow lg mb-4">
       {/* Index + Trash */}

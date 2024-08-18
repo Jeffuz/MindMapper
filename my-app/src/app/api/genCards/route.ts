@@ -82,7 +82,10 @@ export async function POST(request: Request) {
         },
         {
           role: "user",
-          content: `Context: ${context}\n\nBased on this, generate ${cardAmount} flashcards in JSON array format, each containing a 'term' and 'definition'.`,
+          content: `Context: ${context}\n\nBased on this, generate ${cardAmount} flashcards in JSON array format, each containing a 'term' and 'definition'.
+           Your response should start with a open curly bracket and end with a closing curly bracket.
+           Each key should not be wrapped with quotes.
+          `,
         },
       ],
       model: model,
@@ -93,11 +96,12 @@ export async function POST(request: Request) {
       apiResponse.choices[0]?.message?.content || "No response generated.";
 
     console.log("Flashcards Generated:", responseMessage);
-
+    const jsonObj = JSON.parse(responseMessage);
     return new Response(
+      // Parse response message into object
       JSON.stringify({
         success: true,
-        flashcards: responseMessage,
+        flashcards: jsonObj.flashcards,
       }),
       { status: 201 }
     );

@@ -6,8 +6,6 @@ import Modal from "@/app/components/modal";
 import { FaRegFilePdf, FaLink, FaTextHeight } from "react-icons/fa";
 import { FaBrain } from "react-icons/fa";
 import Link from "next/link";
-import IsUserAuthenticated from "@/app/utils/authenticateUser";
-import { useRouter } from 'next/navigation';
 
 const Creation = () => {
   const [title, setTitle] = useState("");
@@ -56,6 +54,16 @@ const Creation = () => {
     setCards(newCards);
   };
 
+
+  const handleAddCards = (cardToAddArray: Array<{term:string, definition:string}>) => {
+    // const cardToAdd = {
+    //   term: term,
+    //   definition: definition
+    // };
+
+    setCards(cards.concat(cardToAddArray));
+  };
+
   // Generate cards with AI
   const handleGenerateCards = async () => {
     setIsLoading(true);
@@ -83,7 +91,11 @@ const Creation = () => {
       setErrorMessage(null);
       setOpenGenModal(false);
 
-      console.log(result.flashcards);
+      console.log(result.flashcards, typeof(result.flashcards));
+      // Add Flashcards to card state
+      handleAddCards(result.flashcards);
+
+
     } catch (error) {
       setSuccessMessage(null);
       setErrorMessage("Failed to generate flashcards. Please try again.");

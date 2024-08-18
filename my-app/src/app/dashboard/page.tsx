@@ -5,6 +5,7 @@ import Deck_card from "../components/dashboard/deck_card";
 import { useEffect, useState } from 'react';
 import IsUserAuthenticated from "../utils/authenticateUser";
 import { useRouter } from "next/navigation";
+import { firebaseAuth } from "../utils/firebase";
 
 export default function Dashboard() {
 
@@ -13,15 +14,20 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
 
+  // State for decks that user has
+  const [decks, setDecks] = useState([]);
   useEffect(() => {
+    console.log(firebaseAuth.currentUser);
+    
     async function checkUserAuth() {
-      const isUserAuth = await IsUserAuthenticated();
-      if(isUserAuth) {
-        setIsAuth(true);
-      } 
-      else {
-        router.push("/signin");
-      }
+      const isUserAuth = await IsUserAuthenticated()
+      console.log(isUserAuth)
+      // if(isUserAuth) {
+      //   setIsAuth(true);
+      // } 
+      // else {
+      //   router.push("/signin");
+      // }
       setIsLoading(false);
     }
     
@@ -38,6 +44,10 @@ export default function Dashboard() {
     
     // API CALL
   }, [isAuth])
+
+  const getUserDecks = async() => {
+    
+  }
   const deck = [
     {
       title: "Vocabulary",
