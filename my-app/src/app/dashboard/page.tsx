@@ -145,6 +145,7 @@ export default function Dashboard() {
             <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-5 md:p-12 p-5 pt-0 md:pt-0 overflow-y-scroll">
               {deck.map((set, index) => (
                 <Deck_card
+                  id={set.id}
                   key={index}
                   title={set.title}
                   subtitle={set.description}

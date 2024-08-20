@@ -1,6 +1,14 @@
 import { LuBookOpen } from "react-icons/lu";
+import { useRouter } from "next/navigation";
 
-const deck_card = ({ title, subtitle, amount }: any) => {
+const deck_card = ({ id, title, subtitle, amount }: any) => {
+  
+  const router = useRouter();
+
+  const handleClickEdit = () => {
+    router.push(`/deck/edit?deckId=${id}`)
+  }
+
   return (
     <div className="flex flex-col justify-between bg-teal2 rounded-lg 
     shadow-lg p-5 aspect-video hover:brightness-125 transition-all duration-200">
@@ -22,7 +30,7 @@ const deck_card = ({ title, subtitle, amount }: any) => {
         rounded-lg shadow-lg transition duration-200">
           Open Deck
         </button>
-        <button className="w-full md:w-[30%] hover:bg-white rounded-lg transition duration-200">
+        <button onClick={handleClickEdit} className="w-full md:w-[30%] hover:bg-white rounded-lg transition duration-200">
           Edit
         </button>
       </div>

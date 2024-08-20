@@ -1,4 +1,4 @@
-import { doc, getDoc, query, where } from "firebase/firestore";
+import { doc, getDoc, updateDoc  } from "firebase/firestore";
 import { ICardDeck, ICardData } from '../../../../../apiInterface/ICardDeck';
 import db from "@/app/utils/firestore";
 
@@ -35,4 +35,28 @@ export async function GET(request: Request, {params}: {params: {cardDeckId: stri
   else {
     return Response.json({message: "Document does not exists"}, {status: 200});
   }
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+
+  if(!("deckId" in body) || !("cards" in body))
+    return Response.json({}, {status: 404, statusText: "Body Missing Fields"});
+  
+  const deckId = body.deckId;
+
+  const documentRef = doc(db, "cardDecks", deckId);
+
+  try {
+    await updateDoc(documentRef, {
+      cards: body.cards
+    })
+  } catch (e) {
+    return Response.json({}, {status: 404, statusText: "Could not Update user decks"});
+  }
+
+  console.log("Updated doc");
+  
+
+  return Response.json({}, {status: 200});
 }

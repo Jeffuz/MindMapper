@@ -19,13 +19,16 @@ export async function POST(request: Request) {
 
     let returnArray = []
     qSnapshot.forEach(deck => {
-      const data = deck.data();
+      let data = deck.data();
 
-      returnArray.push(data)
+      data.id = deck.id;
+      returnArray.push(data);
     })    
 
     return Response.json({body: returnArray}, {status: 200});
   } catch (e) {
+    console.log(e);
+    
     return Response.json({}, {status: 404, statusText: "Could not get user decks"});
   }
 
