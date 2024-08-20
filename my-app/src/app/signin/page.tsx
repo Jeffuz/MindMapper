@@ -5,6 +5,8 @@ import Navbar from "../components/navbar";
 import Link from "../../../node_modules/next/link";
 import Footer from "../components/footer";
 import { useRouter } from 'next/navigation';
+import { signInUser } from '@/app/utils/firebaseAuthUtil';
+import { firebaseAuth } from '../utils/firebase';
 
 const Signin = () => {
   const router = useRouter()
@@ -16,50 +18,20 @@ const Signin = () => {
   const [error, setError] = useState("");
   const [isError, setIsError] = useState(false);
 
-  const isValidEmail = (emailString: string) => {
-    let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/g;
-
-    if (!regex.test(emailString)) return false;
-
-    return true;
-  };
-
-  const isValidPassword = (passString: string) => {
-    if (passString.length < 6) return false;
-
-    return true;
-  };
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(isValidEmail(email), isValidPassword(password));
-
 
     setIsLoading(true)
     // API Call
-    await fetch("/api/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        
-        if("message" in data) {
-          setIsError(true)
-          setError(data.message)
-          setIsLoading(false)
-          
-        } 
-        else
-          router.back()
-      });
+    const response = await signInUser(firebaseAuth, email, password);
+    if ("errorCode" in response) {
+      setIsError(true)
+      setError("Incorrect Email or password")
+      setIsLoading(false)
+      return
+    }
+    router.back()
+
   };
 
   return (

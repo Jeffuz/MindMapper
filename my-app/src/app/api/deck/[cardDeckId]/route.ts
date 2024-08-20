@@ -2,7 +2,7 @@ import { doc, getDoc, query, where } from "firebase/firestore";
 import { ICardDeck, ICardData } from '../../../../../apiInterface/ICardDeck';
 import db from "@/app/utils/firestore";
 
-
+// GET CARDS BASED on card ID
 export async function GET(request: Request, {params}: {params: {cardDeckId: string}}) {
   const cardDeckId = params.cardDeckId;
 

@@ -6,8 +6,14 @@ import Modal from "@/app/components/modal";
 import { FaRegFilePdf, FaLink, FaTextHeight } from "react-icons/fa";
 import { FaBrain } from "react-icons/fa";
 import Link from "next/link";
-
+import { firebaseAuth } from '../../utils/firebase';
+import { useRouter } from 'next/navigation';
 const Creation = () => {
+
+  const router = useRouter();
+
+  const [user, setUser] = useState<any>(null);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [cards, setCards] = useState([{ term: "", definition: "" }]);
@@ -29,6 +35,10 @@ const Creation = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  firebaseAuth.onAuthStateChanged((currentUser) => {
+    if(user === null)
+      setUser(currentUser);
+  })
   // Add Card
   const handleAddCard = () => {
     setCards([...cards, { term: "", definition: "" }]);
@@ -54,6 +64,32 @@ const Creation = () => {
     setCards(newCards);
   };
 
+  const createNewDeck = async () => {
+    if(user === null)
+      router.push("/signin");
+
+    const headers = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title,
+        description: description,
+        cards: cards,
+        associatedUserId: user.uid
+      })
+    }
+    await fetch("/api/deck", headers)
+    .then(response => {
+      if (response.status === 200)
+        router.push("/dashboard");
+    })
+    .catch(e => {
+      console.log("Error Creating deck");
+      
+    })
+  }
 
   const handleAddCards = (cardToAddArray: Array<{term:string, definition:string}>) => {
     // const cardToAdd = {
@@ -91,7 +127,6 @@ const Creation = () => {
       setErrorMessage(null);
       setOpenGenModal(false);
 
-      console.log(result.flashcards, typeof(result.flashcards));
       // Add Flashcards to card state
       handleAddCards(result.flashcards);
 
@@ -276,7 +311,7 @@ const Creation = () => {
           <div className="font-bold md:text-3xl text-2xl">
             Create a new flashcard set
           </div>
-          <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
+          <button onClick={createNewDeck} className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
             Create
           </button>
         </div>
@@ -443,7 +478,7 @@ const Creation = () => {
         </button>
         {/* Create Deck*/}
         <div className="flex justify-end w-full mb-10">
-          <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
+          <button onClick={createNewDeck} className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
             Create
           </button>
         </div>

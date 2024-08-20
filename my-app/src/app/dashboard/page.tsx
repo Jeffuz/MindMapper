@@ -2,108 +2,126 @@
 import Navbar from "../components/navbar";
 import Link from "next/link";
 import Deck_card from "../components/dashboard/deck_card";
-import { useEffect, useState } from 'react';
-import IsUserAuthenticated from "../utils/authenticateUser";
 import { useRouter } from "next/navigation";
 import { firebaseAuth } from "../utils/firebase";
+import { setCurrentScreen } from "firebase/analytics";
+import { useState, useEffect } from 'react';
 
 export default function Dashboard() {
 
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   // State for decks that user has
-  const [decks, setDecks] = useState([]);
-  useEffect(() => {
-    console.log(firebaseAuth.currentUser);
-    
-    async function checkUserAuth() {
-      const isUserAuth = await IsUserAuthenticated()
-      console.log(isUserAuth)
-      // if(isUserAuth) {
-      //   setIsAuth(true);
-      // } 
-      // else {
-      //   router.push("/signin");
-      // }
-      setIsLoading(false);
+  const [deck, setDeck] = useState([]);
+
+  firebaseAuth.onAuthStateChanged(async (currentUser) => {
+    if(user === null) {
+      setUser(currentUser)
+      
+    } 
+   
+    if (currentUser === null)
+      router.push("/signin");
+    else
+      setIsAuth(true);
+  });
+
+  const getUserDecks = async(userId: string) => {
+    const headers = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userId: userId
+      })
     }
-    
-    if (!isAuth && !isLoading) {
-      setIsLoading(true);
-      checkUserAuth();
-    }    
-  }, []);
 
-  // todo grab user decks
-  useEffect(() => {
-    if (!isAuth)
-      return
-    
-    // API CALL
-  }, [isAuth])
+    await fetch("/api/deck/getUserDecks", headers)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.body);
+        
+        setDeck(data.body)
+      })
+      .catch(e => {
+        console.log("No Decks Found")
+      })
+      .finally(() => setIsLoading(false));
 
-  const getUserDecks = async() => {
     
+
   }
-  const deck = [
-    {
-      title: "Vocabulary",
-      subtitle: "English Vocabulary Words",
-      amount: 120,
-    },
-    {
-      title: "Math Formulas",
-      subtitle: "Common math formulas",
-      amount: 80,
-    },
-    {
-      title: "Biology",
-      subtitle: "Key biology concepts",
-      amount: 150,
-    },
-    {
-      title: "History",
-      subtitle: "Important historical events",
-      amount: 100,
-    },
-    {
-      title: "Vocabulary",
-      subtitle: "English Vocabulary Words",
-      amount: 120,
-    },
-    {
-      title: "Vocabulary",
-      subtitle: "English Vocabulary Words",
-      amount: 120,
-    },
-    {
-      title: "Math Formulas",
-      subtitle: "Common math formulas",
-      amount: 80,
-    },
-    {
-      title: "Biology",
-      subtitle: "Key biology concepts",
-      amount: 150,
-    },
-    {
-      title: "History",
-      subtitle: "Important historical events",
-      amount: 100,
-    },
-    {
-      title: "Vocabulary",
-      subtitle: "English Vocabulary Words",
-      amount: 120,
-    },
-  ];
+
+  useEffect(() => {
+    console.log(isAuth, user);
+    
+    if (isAuth && user !== null) {
+      console.log("GETTING USER DATA", user);
+      
+      getUserDecks(user.uid);
+    }
+  }, [isAuth])
+  // const deck = [
+  //   {
+  //     title: "Vocabulary",
+  //     subtitle: "English Vocabulary Words",
+  //     amount: 120,
+  //   },
+  //   {
+  //     title: "Math Formulas",
+  //     subtitle: "Common math formulas",
+  //     amount: 80,
+  //   },
+  //   {
+  //     title: "Biology",
+  //     subtitle: "Key biology concepts",
+  //     amount: 150,
+  //   },
+  //   {
+  //     title: "History",
+  //     subtitle: "Important historical events",
+  //     amount: 100,
+  //   },
+  //   {
+  //     title: "Vocabulary",
+  //     subtitle: "English Vocabulary Words",
+  //     amount: 120,
+  //   },
+  //   {
+  //     title: "Vocabulary",
+  //     subtitle: "English Vocabulary Words",
+  //     amount: 120,
+  //   },
+  //   {
+  //     title: "Math Formulas",
+  //     subtitle: "Common math formulas",
+  //     amount: 80,
+  //   },
+  //   {
+  //     title: "Biology",
+  //     subtitle: "Key biology concepts",
+  //     amount: 150,
+  //   },
+  //   {
+  //     title: "History",
+  //     subtitle: "Important historical events",
+  //     amount: 100,
+  //   },
+  //   {
+  //     title: "Vocabulary",
+  //     subtitle: "English Vocabulary Words",
+  //     amount: 120,
+  //   },
+  // ];
 
   if (isLoading) {
     <>
-      LOADING
+      <p>LOADING</p>
     </>
   } else {
       return (
@@ -129,8 +147,8 @@ export default function Dashboard() {
                 <Deck_card
                   key={index}
                   title={set.title}
-                  subtitle={set.subtitle}
-                  amount={set.amount}
+                  subtitle={set.description}
+                  amount={set.cards.length}
                 />
               ))}
             </div>

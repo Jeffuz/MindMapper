@@ -1,6 +1,7 @@
 import { signInUser } from "@/app/utils/firebaseAuthUtil";
 import { firebaseAuth } from '../../utils/firebase';
 
+// todo remove not needed
 export async function POST(request: Request) {
 
   const body = await request.json();
