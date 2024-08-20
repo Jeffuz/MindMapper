@@ -1,86 +1,89 @@
-'use client'
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation'
-import Navbar from '../components/navbar';
-import Link from '../../../node_modules/next/link';
-import Footer from '../components/footer';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Navbar from "../components/navbar";
+import Link from "../../../node_modules/next/link";
+import Footer from "../components/footer";
+import { FaGoogle } from "react-icons/fa";
 
 const Signup = () => {
-  const router = useRouter()
+  const router = useRouter();
 
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [error, setError] = useState("")
-  const [isError, setIsError] = useState(false)
-  
-  const isValidEmail = (emailString:string) => {
-    let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/g
+  const [error, setError] = useState("");
+  const [isError, setIsError] = useState(false);
 
-    if (!regex.test(emailString))
-      return false      
+  const isValidEmail = (emailString: string) => {
+    let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/g;
 
-    return true
-  }
+    if (!regex.test(emailString)) return false;
 
-  const isValidPassword = (passString:string) => {
-    if (passString.length < 6)
-      return false
+    return true;
+  };
 
-    return true
-  }
+  const isValidPassword = (passString: string) => {
+    if (passString.length < 6) return false;
 
-  const handleSubmit = async (e:any) => {
-    e.preventDefault()
-    setIsError(false)
+    return true;
+  };
+
+  // Handle Sign up
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setIsError(false);
 
     if (!isValidEmail(email)) {
-      setError("Input emailed is not valid")
-      setIsError(true)
-      return
+      setError("Input emailed is not valid");
+      setIsError(true);
+      return;
     }
     if (!isValidPassword(password)) {
-      setError("Password does not meet criteria")
-      setIsError(true)
-      return
+      setError("Password does not meet criteria");
+      setIsError(true);
+      return;
     }
 
     if (confirmPassword !== password) {
-      setError("Passwords do not match")
-      setIsError(true)
-      return
+      setError("Passwords do not match");
+      setIsError(true);
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     // API Call
     await fetch("/api/signup", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email: email,
-        password: password
-      })
+        password: password,
+      }),
     })
-    .then(response => response.json())
-    .then(data => {
-      if("error" in data) {
-        setIsError(true)
-        setError(data.error)
-        setIsLoading(false)
-      } 
-      else 
-        router.push("/signin")
-    });
-  }
+      .then((response) => response.json())
+      .then((data) => {
+        if ("error" in data) {
+          setIsError(true);
+          setError(data.error);
+          setIsLoading(false);
+        } else router.push("/signin");
+      });
+  };
+
+  // Handle Google Sign up
+  const handleGoogleSignUp = () => {
+    // Cook
+  };
 
   return (
-    <> 
+    <>
       <Navbar />
       {/* Page Layer */}
       <div className="h-screen flex flex-col justify-between">
@@ -102,7 +105,7 @@ const Signup = () => {
                   type="email"
                   placeholder="Enter your email"
                   className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  value={email} 
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
@@ -115,8 +118,8 @@ const Signup = () => {
                   type="password"
                   placeholder="Enter your password"
                   className="sappearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               {/* Password */}
@@ -128,22 +131,52 @@ const Signup = () => {
                   type="password"
                   placeholder="Confirm your password"
                   className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  value={confirmPassword} 
-                  onChange={(e) => setConfirmPassword(e.target.value)} 
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               </div>
               <div>
                 <p>Password must be at least 6 characters long</p>
-                {isError ? (<p className='text-[7px] md:text-[15px] text-red-500 transition-all duration-200 animate-bounce'>{error}</p>) : null}
+                {isError ? (
+                  <p className="text-[7px] md:text-[15px] text-red-500 transition-all duration-200 animate-bounce">
+                    {error}
+                  </p>
+                ) : null}
               </div>
               {/* Button */}
               <div className="flex items-center justify-center">
-                
                 <button
                   onClick={handleSubmit}
                   className="bg-orange1 hover:bg-orange2 text-white font-bold w-full py-2 rounded-md shadow-lg transition duration-500"
                 >
-                  { isLoading ? (<div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />) : (<p>Sign Up</p>) }
+                  {isLoading ? (
+                    <div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />
+                  ) : (
+                    <p>Sign Up</p>
+                  )}
+                </button>
+              </div>
+              {/* Divider */}
+              <div className="flex items-center my-4">
+                <hr className="flex-grow border-t border-gray-300" />
+                <span className="mx-4 text-gray-600">or</span>
+                <hr className="flex-grow border-t border-gray-300" />
+              </div>
+              {/* Google Sign Up */}
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={handleGoogleSignUp}
+                  className="bg-teal2 hover:bg-teal2/80 text-white font-bold w-full py-2 rounded-lg shadow-lg flex items-center justify-center transition duration-500"
+                >
+                  {isLoading ? (
+                    <div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <FaGoogle />
+                      <div>Sign Up with Google</div>
+                    </div>
+                  )}
                 </button>
               </div>
               {/* Sign in */}
@@ -165,7 +198,6 @@ const Signup = () => {
       </div>
     </>
   );
-}
+};
 
-
-export default Signup
+export default Signup;

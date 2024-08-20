@@ -4,34 +4,40 @@ import { useState } from "react";
 import Navbar from "../components/navbar";
 import Link from "../../../node_modules/next/link";
 import Footer from "../components/footer";
-import { useRouter } from 'next/navigation';
-import { signInUser } from '@/app/utils/firebaseAuthUtil';
-import { firebaseAuth } from '../utils/firebase';
+import { useRouter } from "next/navigation";
+import { signInUser } from "@/app/utils/firebaseAuthUtil";
+import { firebaseAuth } from "../utils/firebase";
+import { FaGoogle } from "react-icons/fa";
 
 const Signin = () => {
-  const router = useRouter()
+  const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [isError, setIsError] = useState(false);
 
+  // Handle sign in for email password
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    setIsLoading(true)
+    setIsLoading(true);
     // API Call
     const response = await signInUser(firebaseAuth, email, password);
     if ("errorCode" in response) {
-      setIsError(true)
-      setError("Incorrect Email or password")
-      setIsLoading(false)
-      return
+      setIsError(true);
+      setError("Incorrect Email or password");
+      setIsLoading(false);
+      return;
     }
-    router.back()
+    router.back();
+  };
 
+  // Handle google sign in
+  const handleGoogleSignIn = () => {
+    // Cook
   };
 
   return (
@@ -87,7 +93,34 @@ const Signin = () => {
                   type="submit"
                   className="bg-orange1 hover:bg-orange2 text-white font-bold w-full py-2 rounded-md shadow-lg transition duration-500"
                 >
-                  { isLoading ? (<div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />) : (<p>Sign In</p>) }
+                  {isLoading ? (
+                    <div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />
+                  ) : (
+                    <p>Sign In</p>
+                  )}
+                </button>
+              </div>
+              {/* Divider */}
+              <div className="flex items-center my-4">
+                <hr className="flex-grow border-t border-gray-300" />
+                <span className="mx-4 text-gray-600">or</span>
+                <hr className="flex-grow border-t border-gray-300" />
+              </div>
+              {/* Google Sign In */}
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  className="bg-teal2 hover:bg-teal2/80 text-white font-bold w-full py-2 rounded-lg shadow-lg flex items-center justify-center transition duration-500"
+                >
+                  {isLoading ? (
+                    <div className="m-auto h-6 w-6 animate-spin rounded-full border-b-2 border-current" />
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <FaGoogle />
+                      <div>Sign In with Google</div>
+                    </div>
+                  )}
                 </button>
               </div>
               {/* Sign in */}
