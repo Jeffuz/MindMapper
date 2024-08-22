@@ -6,7 +6,9 @@ import { firebaseAuth } from '../../utils/firebase';
 import Navbar from '@/app/components/navbar';
 import CreateCard from '../../components/dashboard/create_card';
 
+
 export default function Page() {
+
 
   const router = useRouter();
   const params = useSearchParams()

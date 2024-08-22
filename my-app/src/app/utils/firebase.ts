@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
-import { getAuth, setPersistence, browserSessionPersistence, onAuthStateChanged   } from "firebase/auth";
+import { getAuth, setPersistence, GoogleAuthProvider,getRedirectResult, browserSessionPersistence, onAuthStateChanged   } from "firebase/auth";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -33,5 +33,6 @@ onAuthStateChanged(firebaseAuth, (user) => {
     // ...
   }
 });
+
 
 isSupported().then((_)=>{ const analytics = getAnalytics(firebaseApp)}).catch((e)=>console.warn("Analytics is not supported in this environment.",e.message))

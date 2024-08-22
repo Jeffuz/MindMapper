@@ -1,6 +1,5 @@
 import db from "@/app/utils/firestore";
-import { addDoc, collection, query, getDocs } from 'firebase/firestore';
-import { ICardDeck } from '../../../../apiInterface/ICardDeck';
+import { addDoc, collection, query, getDocs, where } from 'firebase/firestore';
 
 
 
@@ -10,10 +9,11 @@ export async function POST(request: Request) {
   if(!("userId" in body))
     return Response.json({}, {status: 404, statusText: "Body Missing Fields"});
   
+  const userId = body.userId
 
   const collectionRef = collection(db, "cardDecks");
 
-  const q = query(collectionRef);
+  const q = query(collectionRef, where("associatedUserId", "==", userId));
   try {
     const qSnapshot = await getDocs(q);
 

@@ -8,9 +8,12 @@ import { useRouter } from "next/navigation";
 import { signInUser } from "@/app/utils/firebaseAuthUtil";
 import { firebaseAuth } from "../utils/firebase";
 import { FaGoogle } from "react-icons/fa";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const Signin = () => {
+  const provider = new GoogleAuthProvider();
   const router = useRouter();
+  
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,18 +29,30 @@ const Signin = () => {
     setIsLoading(true);
     // API Call
     const response = await signInUser(firebaseAuth, email, password);
+
     if ("errorCode" in response) {
       setIsError(true);
       setError("Incorrect Email or password");
       setIsLoading(false);
       return;
     }
-    router.back();
+    router.push(`/dashboard`);
   };
 
   // Handle google sign in
-  const handleGoogleSignIn = () => {
-    // Cook
+  const handleGoogleSignIn = async () => {
+    signInWithPopup(firebaseAuth, provider)
+    .then((result) => {
+      const user = result.user;
+      // IdP data available using getAdditionalUserInfo(result)
+      // ...
+
+    })
+    .then(() => router.push('/dashboard'))
+    .catch((error) => {
+      console.log(error)
+    });
+    
   };
 
   return (
@@ -53,7 +68,7 @@ const Signin = () => {
             <div className="text-4xl font-bold mb-6">
               Sign In for MindMapper
             </div>
-            <form onClick={handleSubmit}>
+            <form>
               {/* Email */}
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -90,7 +105,7 @@ const Signin = () => {
               {/* Button */}
               <div className="flex items-center justify-between">
                 <button
-                  type="submit"
+                  onClick={handleSubmit}
                   className="bg-orange1 hover:bg-orange2 text-white font-bold w-full py-2 rounded-md shadow-lg transition duration-500"
                 >
                   {isLoading ? (

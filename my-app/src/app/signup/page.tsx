@@ -6,8 +6,11 @@ import Navbar from "../components/navbar";
 import Link from "../../../node_modules/next/link";
 import Footer from "../components/footer";
 import { FaGoogle } from "react-icons/fa";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { firebaseAuth } from "../utils/firebase";
 
 const Signup = () => {
+  const provider = new GoogleAuthProvider();
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -78,8 +81,20 @@ const Signup = () => {
   };
 
   // Handle Google Sign up
-  const handleGoogleSignUp = () => {
-    // Cook
+  // Handle google sign in
+  const handleGoogleSignIn = async () => {
+    signInWithPopup(firebaseAuth, provider)
+    .then((result) => {
+      const user = result.user;
+      // IdP data available using getAdditionalUserInfo(result)
+      // ...
+
+    })
+    .then(() => router.push('/dashboard'))
+    .catch((error) => {
+      console.log(error)
+    });
+    
   };
 
   return (
