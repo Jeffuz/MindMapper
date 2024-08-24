@@ -44,11 +44,8 @@ const Signin = () => {
     signInWithPopup(firebaseAuth, provider)
     .then((result) => {
       const user = result.user;
-      // IdP data available using getAdditionalUserInfo(result)
-      // ...
-
+      router.push('/dashboard')
     })
-    .then(() => router.push('/dashboard'))
     .catch((error) => {
       console.log(error)
     });
