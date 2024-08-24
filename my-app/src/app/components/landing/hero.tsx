@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Hero() {
@@ -79,13 +80,16 @@ export default function Hero() {
         <div className="flex gap-5 md:flex-row flex-col">
           {/* Add Back after app is realeased */}
 
-          <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
-            Get Started
-          </button>
-          <button className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md">
-            Learn More
-          </button>
-
+          <Link href={"/signin"}>
+            <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
+              Get Started
+            </button>
+          </Link>
+          <Link href={"/signin"}>
+            <button className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md">
+              Learn More
+            </button>
+          </Link>
           {/* Waitlist */}
           {/* <input
             type="email"
