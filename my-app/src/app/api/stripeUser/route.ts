@@ -3,7 +3,7 @@ import { collection, addDoc } from "firebase/firestore";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_KEY);
-
+// Create new stripe customer
 export async function POST(req: Request) {
   const body = await req.json()
   
