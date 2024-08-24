@@ -8,6 +8,7 @@ import { FaBrain } from "react-icons/fa";
 import Link from "next/link";
 import { firebaseAuth } from '../../utils/firebase';
 import { useRouter } from 'next/navigation';
+import { subscriptionType } from '../../utils/subscriptionType';
 const Creation = () => {
 
   const router = useRouter();
@@ -17,6 +18,8 @@ const Creation = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [cards, setCards] = useState([{ term: "", definition: "" }]);
+  const [tier, setTier] = useState(subscriptionType.free);
+  
   // RAG Modal
   const [openModal, setOpenModal] = useState<boolean>(false);
   // GenAI Modal
@@ -38,7 +41,26 @@ const Creation = () => {
   firebaseAuth.onAuthStateChanged((currentUser) => {
     if(user === null)
       setUser(currentUser);
-  })
+  });
+
+  // Grab User Data
+  useEffect(() => {
+    if (user === null)
+      return;
+
+    const getUserData = async() => {
+      await fetch(`/api/user/${user.uid}`, {method: "GET"})
+      .then(response => response.json())
+      .then(data => data.body)
+      .then(body => {
+        setTier(body.tier)
+        console.log(body.tier)
+      });
+    }
+
+    getUserData();
+  }, [])
+
   // Add Card
   const handleAddCard = () => {
     setCards([...cards, { term: "", definition: "" }]);
@@ -399,12 +421,22 @@ const Creation = () => {
           </Modal>
 
           {/* Upload content restricted to Pro Users */}
-          <button
-            onClick={() => setOpenModal(true)}
-            className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md"
-          >
-            Upload Content
-          </button>
+          {tier === subscriptionType.pro ? (
+            <button 
+                onClick={() => setOpenModal(true)}
+                className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md"
+              >
+                Upload Content
+              </button>            
+          ) : (
+            <button disabled
+                onClick={() => setOpenModal(true)}
+                className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md"
+              >
+                Upload Content
+              </button>   
+          )}
+ 
           {/* Rag Implementation */}
           <Modal open={openModal} onClose={() => setOpenModal(false)}>
             <div className="flex flex-col justify-center items-center p-6 md:w-[500px] aspect-square">

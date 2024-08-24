@@ -10,16 +10,25 @@ export async function POST(req: Request) {
     return Response.json({}, {status: 404, statusText: "Body Missing Field"});
 
   const stripeId = body.stripeId // Stripe Customer id
-  const subType = body.subType // should be enum
+  const subType = body.subType 
   const userId = body.userId // User Id
-
+  
   let prodId = ""
-  if(subType == "Basic") //subscriptionType.monthly
-    prodId = productId.monthly
-  else
-    prodId = productId.yearly
+  let tier = "";
+
+  if(subType == "Basic") { //subscriptionType.monthly
+    prodId = productId.basic_monthly
+    tier = "Basic"
+  }
+    
+  else {
+    prodId = productId.pro_monthly
+    tier = "Pro"
+  }
+    
    
-  // Perform 
+  // Todo Test if new subscription will override old one or we must cancel old one first.
+  // Generate Subscription for user
   
   try {
     const subscription = await stripe.subscriptions.create({
@@ -38,7 +47,8 @@ export async function POST(req: Request) {
     const subId = subscription.id
 
     updateDoc(docRef, {
-      subscription: subId
+      subscription: subId,
+      tier: tier
     })
 
     return Response.json({
@@ -53,17 +63,13 @@ export async function POST(req: Request) {
   }
 }
 
+//Todo Finish Delete
 // Cancel Subscription
 export async function DELETE(res: Response) {
   const body = await res.json();
 
-  if(!("stripeId" in body) || !("userId" in body))
+  if(!("stripeId" in body) || !("userId" in body) || !("subId" in body))
   return Response.json({}, {status: 404, statusText: "Body Missing Field"});
   
-  const subscription = await stripe.subscriptions.update(
-    '{{SUBSCRIPTION_ID}}',
-    {
-      cancel_at_period_end: true,
-    }
-  );
+  const subscription = await stripe.subscriptions.cancel(body.subId);
 }

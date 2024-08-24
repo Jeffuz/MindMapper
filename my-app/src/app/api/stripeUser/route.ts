@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     await setDoc(docRef, {
       name: name,
       stripeId: customerId,
-      tier: "free"
+      tier: "Free"
     });
 
   } catch (e) { 

@@ -5,6 +5,8 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 
+//Todo customize payment ui
+// Code from Stripe for payment 
 export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();

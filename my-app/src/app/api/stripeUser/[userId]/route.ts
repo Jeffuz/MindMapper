@@ -1,7 +1,8 @@
 import db from "@/app/utils/firestore";
 import { doc, getDoc } from "firebase/firestore";
 
-
+// todo exact duplicate code to user/userid remove this inthe future and fix api routing in client
+// GET stripe user data
 export async function GET(request: Request, {params}: {params: {userId: string}}) {
   const userId = params.userId;
 

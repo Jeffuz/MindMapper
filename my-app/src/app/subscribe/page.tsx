@@ -11,7 +11,6 @@ import CheckoutForm from "../components/subscription/checkoutForm";
 export default function Page() {
   const [clientSecret, setClientSecret] = useState<string>("");
   const [user, setUser] = useState<any>(null)
-  const [stripeId, setStripeId] = useState<string | null>(null)
 
   const stripe = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
   const router =  useRouter();
@@ -38,8 +37,9 @@ export default function Page() {
     if (user) {
       getPayment()
     }
-  }, [user              ])
+  }, [user])
   
+  // Returns user stripe id
   const getStripeId = async () => {
     const id = await fetch(`/api/stripeUser/${user.uid}`, { method: "GET", headers: {"Content-Type": "application/json"} })
     .then(response => response.json())
@@ -47,10 +47,10 @@ export default function Page() {
     .then(body => body.stripeId)
     .catch(e => console.log(e));
 
-    setStripeId(id);
     return id
   }
 
+  // Generate Stripe Payment that user will go through
   const createPayment = async(id: string) => {
     fetch("/api/stripePay", {
       method: "POST",
@@ -65,6 +65,7 @@ export default function Page() {
     .then((response) => response.json())
     .then((data) => {
       console.log(data)
+      // Client Secrete used for payment
       setClientSecret(data.clientSecret)
       })
     .catch(e => {
