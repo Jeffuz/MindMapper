@@ -1,17 +1,26 @@
+"use client";
+
 import { LuBookOpen } from "react-icons/lu";
 import { useRouter } from "next/navigation";
 
-const deck_card = ({ id, title, subtitle, amount }: any) => {
-  
+const Deck_card = ({ id, title, subtitle, amount }: any) => {
   const router = useRouter();
 
+  // Edit Deck
   const handleClickEdit = () => {
-    router.push(`/deck/edit?deckId=${id}`)
-  }
+    router.push(`/deck/edit?deckId=${id}`);
+  };
+
+  // Open Deck for studying
+  const handleClickOpen = () => {
+    router.push(`/dashboard/study?id=${id}`);
+  };
 
   return (
-    <div className="flex flex-col justify-between bg-teal2 rounded-lg 
-    shadow-lg p-5 aspect-video hover:brightness-125 transition-all duration-200">
+    <div
+      className="flex flex-col justify-between bg-teal2 rounded-lg 
+    shadow-lg p-5 aspect-video hover:brightness-125 transition-all duration-200"
+    >
       {/* Titles */}
       <div className="flex flex-col">
         {/* title */}
@@ -26,11 +35,17 @@ const deck_card = ({ id, title, subtitle, amount }: any) => {
       </div>
       {/* Button */}
       <div className="w-full flex justify-between md:flex-row flex-col gap-3">
-        <button className="w-full md:w-[70%] bg-orange1 hover:bg-orange-600/80 py-2 text-white 
-        rounded-lg shadow-lg transition duration-200">
+        <button
+          onClick={handleClickOpen}
+          className="w-full md:w-[70%] bg-orange1 hover:bg-orange-600/80 py-2 text-white 
+        rounded-lg shadow-lg transition duration-200"
+        >
           Open Deck
         </button>
-        <button onClick={handleClickEdit} className="w-full md:w-[30%] hover:bg-white rounded-lg transition duration-200">
+        <button
+          onClick={handleClickEdit}
+          className="w-full md:w-[30%] hover:bg-white rounded-lg transition duration-200"
+        >
           Edit
         </button>
       </div>
@@ -38,4 +53,4 @@ const deck_card = ({ id, title, subtitle, amount }: any) => {
   );
 };
 
-export default deck_card;
+export default Deck_card;

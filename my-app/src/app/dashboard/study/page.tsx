@@ -1,8 +1,9 @@
 "use client";
 
 import Navbar from "@/app/components/navbar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useSearchParams } from "next/navigation";
 import Footer from "@/app/components/footer";
 
 const Flashcard = ({
@@ -30,41 +31,39 @@ const Flashcard = ({
   );
 };
 
-const flashcards = [
-  {
-    term: "React",
-    definition: "A JavaScript library for building user interfaces.",
-  },
-  {
-    term: "JavaScript",
-    definition: "A programming language that is used for web development.",
-  },
-  {
-    term: "CSS",
-    definition:
-      "A style sheet language used for describing the presentation of a document written in HTML or XML.",
-  },
-  {
-    term: "HTML",
-    definition:
-      "The standard markup language for creating web pages and web applications.",
-  },
-  {
-    term: "Node.js",
-    definition:
-      "An open-source, cross-platform, JavaScript runtime environment that executes JavaScript code outside a web browser.",
-  },
-];
-
 const FlashcardsCarousel = () => {
+  const searchParams = useSearchParams();
+  const deckId = searchParams.get("id");
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
+  const [deck, setDeck] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch the deck data from the database
+  useEffect(() => {
+    const fetchDeckData = async () => {
+      if (deckId) {
+        try {
+          const response = await fetch(`/api/deck/${deckId}`);
+          const data = await response.json();
+          setDeck(data.body);
+        } catch (error) {
+          console.error("Failed to fetch deck data:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchDeckData();
+  }, [deckId]);
 
   // Prev button for carousel
   const handlePrev = () => {
     setFlipped(false);
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? flashcards.length - 1 : prevIndex - 1
+      prevIndex === 0 ? deck.cards.length - 1 : prevIndex - 1
     );
   };
 
@@ -72,7 +71,7 @@ const FlashcardsCarousel = () => {
   const handleNext = () => {
     setFlipped(false);
     setCurrentIndex((prevIndex) =>
-      prevIndex === flashcards.length - 1 ? 0 : prevIndex + 1
+      prevIndex === deck.cards.length - 1 ? 0 : prevIndex + 1
     );
   };
 
@@ -81,22 +80,30 @@ const FlashcardsCarousel = () => {
     setFlipped(!flipped);
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!deck) {
+    return <div>Deck Not Found...</div>;
+  }
+
   return (
     <div className="flex flex-col bg-teal2 min-h-screen items-center gap-3">
       <Navbar />
       {/* Title */}
       <div className="text-white text-3xl md:text-4xl font-bold mt-8">
-        Put Title State here
+        {deck.title}
       </div>
       {/* Description */}
       <div className="text-white text-center text-md md:text-lg max-w-3xl px-4 mt-4">
-        Put Description State here
+        {deck.description}
       </div>
       {/* Carousel */}
       <div className="flex flex-col justify-center items-center relative w-full max-w-4xl p-5">
         <Flashcard
-          term={flashcards[currentIndex].term}
-          definition={flashcards[currentIndex].definition}
+          term={deck.cards[currentIndex].term}
+          definition={deck.cards[currentIndex].definition}
           flipped={flipped}
           handleFlip={handleFlip}
         />
@@ -110,7 +117,7 @@ const FlashcardsCarousel = () => {
           </button>
           {/* Counter */}
           <div className="text-white text-md md:text-lg font-semibold">
-            {currentIndex + 1} / {flashcards.length}
+            {currentIndex + 1} / {deck.cards.length}
           </div>
           {/* Button Right */}
           <button
@@ -136,7 +143,7 @@ const FlashcardsCarousel = () => {
           </thead>
           {/* Body */}
           <tbody>
-            {flashcards.map((card, index) => (
+            {deck.cards.map((card: any, index: number) => (
               <tr key={index} className="border-t bg-white">
                 <td className="px-4 py-2 text-gray-700">{card.term}</td>
                 <td className="px-4 py-2 text-gray-700">{card.definition}</td>
