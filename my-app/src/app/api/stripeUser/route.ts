@@ -1,8 +1,7 @@
 import db from "@/app/utils/firestore";
-import { collection, addDoc } from "firebase/firestore";
-import Stripe from "stripe";
+import stripe from "@/app/utils/stripe";
+import { collection, addDoc, doc, setDoc } from "firebase/firestore";
 
-const stripe = new Stripe(process.env.STRIPE_KEY);
 // Create new stripe customer
 export async function POST(req: Request) {
   const body = await req.json()
@@ -23,12 +22,13 @@ export async function POST(req: Request) {
 
     const customerId = customer.id
 
-    const collectionRef = collection(db, "userData");
-    await addDoc(collectionRef, {
-      id: userId,
+    const docRef = doc(db, "userData", userId);
+
+    await setDoc(docRef, {
       name: name,
       stripeId: customerId
     });
+
   } catch (e) { 
     console.log("could not create new stripe customer");
     return Response.json({}, {status: 404, statusText: "Could Not Create New Stripe User"});
@@ -37,3 +37,4 @@ export async function POST(req: Request) {
   return Response.json({}, {status: 200});
 
 }
+
