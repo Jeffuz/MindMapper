@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 import Footer from "@/app/components/footer";
+import Loading from "@/app/components/loading";
 
 const Flashcard = ({
   term,
@@ -81,7 +82,14 @@ const FlashcardsCarousel = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bg-teal2 h-screen flex items-center justify-center">
+        <div className="fixed w-full top-0">
+          <Navbar />
+        </div>
+        <Loading />
+      </div>
+    );
   }
 
   if (!deck) {
