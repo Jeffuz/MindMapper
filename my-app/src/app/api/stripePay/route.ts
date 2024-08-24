@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   const userId = body.userId // User Id
 
   let prodId = ""
-  if(subType == "monthly") //subscriptionType.monthly
+  if(subType == "Basic") //subscriptionType.monthly
     prodId = productId.monthly
   else
     prodId = productId.yearly
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     // Add Subscription id to user document
     const docRef = doc(db, "userData", userId)
     const subId = subscription.id
-    
+
     updateDoc(docRef, {
       subscription: subId
     })
@@ -51,4 +51,19 @@ export async function POST(req: Request) {
   } catch (e) {
     return Response.json({}, {status: 400, statusText: e.message})
   }
+}
+
+// Cancel Subscription
+export async function DELETE(res: Response) {
+  const body = await res.json();
+
+  if(!("stripeId" in body) || !("userId" in body))
+  return Response.json({}, {status: 404, statusText: "Body Missing Field"});
+  
+  const subscription = await stripe.subscriptions.update(
+    '{{SUBSCRIPTION_ID}}',
+    {
+      cancel_at_period_end: true,
+    }
+  );
 }

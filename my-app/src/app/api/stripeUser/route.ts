@@ -1,6 +1,7 @@
 import db from "@/app/utils/firestore";
 import stripe from "@/app/utils/stripe";
-import { collection, addDoc, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
+
 
 // Create new stripe customer
 export async function POST(req: Request) {
@@ -26,7 +27,8 @@ export async function POST(req: Request) {
 
     await setDoc(docRef, {
       name: name,
-      stripeId: customerId
+      stripeId: customerId,
+      tier: "free"
     });
 
   } catch (e) { 

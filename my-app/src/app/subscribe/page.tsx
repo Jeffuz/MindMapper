@@ -1,28 +1,80 @@
-import React from "react";
-import { loadStripe } from "@stripe/stripe-js";
+'use client'
+
+import React, {useEffect, useState} from "react";
 import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { firebaseAuth } from "../utils/firebase";
+import CheckoutForm from "../components/subscription/checkoutForm";
 
-import CheckoutForm from "../components/CheckoutForm";
-
-// Make sure to call loadStripe outside of a component’s render to avoid
-// recreating the Stripe object on every render.
-// This is your test publishable API key.
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export default function Page() {
-  const [clientSecret, setClientSecret] = React.useState("");
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const [user, setUser] = useState<any>(null)
+  const [stripeId, setStripeId] = useState<string | null>(null)
 
-  React.useEffect(() => {
-    // Create PaymentIntent as soon as the page loads
-    fetch("/api/create-payment-intent", {
+  const stripe = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+  const router =  useRouter();
+  const search = useSearchParams();
+  const subType = search.get("subType")
+  const subPaymentCycle = search.get("subPaymentCycle")
+
+  firebaseAuth.onAuthStateChanged(async (currentUser) => {
+    if(user === null)
+      setUser(currentUser)
+    
+    if (currentUser === null)
+      router.push("/signin");
+  });
+
+  useEffect(() => {
+    
+    async function getPayment() {
+      const id = await getStripeId();
+
+      await createPayment(id);
+      
+    }
+    if (user) {
+      getPayment()
+    }
+  }, [user              ])
+  
+  const getStripeId = async () => {
+    const id = await fetch(`/api/stripeUser/${user.uid}`, { method: "GET", headers: {"Content-Type": "application/json"} })
+    .then(response => response.json())
+    .then(data => data.body)
+    .then(body => body.stripeId)
+    .catch(e => console.log(e));
+
+    setStripeId(id);
+    return id
+  }
+
+  const createPayment = async(id: string) => {
+    fetch("/api/stripePay", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+      body: JSON.stringify({
+        stripeId: id,
+        subType: subType,
+        userId: user.uid,
+        subPaymentCycle: subPaymentCycle
+       }),
     })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
-  }, []);
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data)
+      setClientSecret(data.clientSecret)
+      })
+    .catch(e => {
+      console.log(e)
+    });
 
+      
+  }
+
+  // Settings for stripe payment page
   const appearance = {
     theme: 'stripe',
   };
@@ -31,13 +83,15 @@ export default function Page() {
     appearance,
   };
 
+
   return (
-    <div className="App">
+    <div className="p-10 md:pl-[35%] md:pr-[35%]">
       {clientSecret && (
-        <Elements options={options} stripe={stripePromise}>
+        <Elements options={options} stripe={stripe}>
           <CheckoutForm />
         </Elements>
       )}
     </div>
-  );
+  );    
+
 }
