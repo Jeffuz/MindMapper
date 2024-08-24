@@ -1,10 +1,38 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { firebaseAuth } from "../utils/firebase";
+import { FaSignOutAlt } from "react-icons/fa";
+import { LuWalletCards } from "react-icons/lu";
 
-const Navbar = ({role}: any) => {
+
+const Navbar = ({ role }: any) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = firebaseAuth.onAuthStateChanged((currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await firebaseAuth.signOut();
+      router.push("/signin");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <div className={`shadow-lg bg-teal3 w-full ${role}`}>
@@ -75,13 +103,30 @@ const Navbar = ({role}: any) => {
                 : "opacity-0 -translate-x-full gap-5" // default
             } bg-teal3 absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out lg:mt-0 lg:p-0 lg:top-0 lg:relative lg:bg-transparent lg:w-auto lg:opacity-100 lg:translate-x-0 lg:flex lg:items-center`}
           >
-            {/* valid auth ? profile icon/dashboard/creation : sign in/up */}
-            {/* <button className="flex items-center mt-4 lg:mt-0 text-white hover:bg-white hover:text-orange1/80 px-4 py-2 rounded-md transition duration-300">
-              <Link href="/signin">Sign In</Link>
-            </button>
-            <button className="flex items-center mt-4 lg:mt-0 text-white bg-orange1 hover:bg-orange1/80 px-4 py-2 rounded-md transition duration-300 shadow-lg">
-              <Link href="/signup">Sign Up</Link>
-            </button> */}
+            {user ? (
+              <>
+                <Link href="/dashboard">
+                  <button className="flex items-center mt-4 lg:mt-0 text-white hover:text-orange1/80 p-2 rounded-full transition duration-300">
+                    <LuWalletCards size={28} />
+                  </button>
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center mt-4 lg:mt-0 text-white hover:text-orange1/80 p-2 rounded-full transition duration-300"
+                >
+                  <FaSignOutAlt size={28} />
+                </button>
+              </>
+            ) : (
+              <>
+                <button className="flex items-center mt-4 lg:mt-0 text-white hover:bg-white hover:text-orange1/80 px-4 py-2 rounded-md transition duration-300">
+                  <Link href="/signin">Sign In</Link>
+                </button>
+                <button className="flex items-center mt-4 lg:mt-0 text-white bg-orange1 hover:bg-orange1/80 px-4 py-2 rounded-md transition duration-300 shadow-lg">
+                  <Link href="/signup">Sign Up</Link>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -39,23 +39,23 @@ export default function Hero() {
         email: email,
       }),
     })
-    .then((response) => response.json())
-    .then((data) => {
-      if (!("message" in data)) {
-        // Missing Body
-        setIsError(true);
-        setIsSuccess(false);
-        setError("Missing Body Data");
-        return;
-      }
+      .then((response) => response.json())
+      .then((data) => {
+        if (!("message" in data)) {
+          // Missing Body
+          setIsError(true);
+          setIsSuccess(false);
+          setError("Missing Body Data");
+          return;
+        }
 
         setIsSuccess(true);
-    })
-    .finally(() => {
+      })
+      .finally(() => {
         setIsError(false);
         setIsLoad(false);
         setIsSuccess(true);
-    });
+      });
   };
 
   return (
@@ -71,23 +71,23 @@ export default function Hero() {
           MindMapper is an AI-powered platform that helps you master any
           subject, from vocabulary to history to science.
         </div>
-        <div className="text-md font-lg text-orange1">
+        {/* <div className="text-md font-lg text-orange1">
           Be the first to know when we launch! Join the waitlist and get early
           access.
-        </div>
+        </div> */}
         {/* CTA */}
         <div className="flex gap-5 md:flex-row flex-col">
           {/* Add Back after app is realeased */}
 
-          {/* <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
+          <button className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
             Get Started
           </button>
           <button className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md">
             Learn More
-          </button> */}
+          </button>
 
           {/* Waitlist */}
-          <input
+          {/* <input
             type="email"
             placeholder="Enter your email"
             value={email}
@@ -104,9 +104,10 @@ export default function Hero() {
               <p>Join&nbsp;Waitlist</p>
             )}
           </button>
+          */}
         </div>
         {/* Submission for waitlist */}
-        <div>
+        {/* <div>
           {isSuccess && (
             <p className="text-sm md:text-md text-white font-bold transition-all duration-200">
               You have successfully been added to the waitlist
@@ -118,7 +119,7 @@ export default function Hero() {
               {error}
             </p>
           )}
-        </div>
+        </div> */}
       </div>
       {/* Right */}
       <div className="text-white lg:block hidden mx-auto">
