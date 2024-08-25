@@ -6,11 +6,12 @@ import Modal from "@/app/components/modal";
 import { FaRegFilePdf, FaLink, FaTextHeight } from "react-icons/fa";
 import { FaBrain } from "react-icons/fa";
 import Link from "next/link";
-import { firebaseAuth } from '../../utils/firebase';
-import { useRouter } from 'next/navigation';
-import { subscriptionType } from '../../utils/subscriptionType';
-const Creation = () => {
+import { firebaseAuth } from "../../utils/firebase";
+import { useRouter } from "next/navigation";
+import { subscriptionType } from "../../utils/subscriptionType";
+import { FaExclamationTriangle, FaTimes, FaArrowUp } from "react-icons/fa";
 
+const Creation = () => {
   const router = useRouter();
 
   const [user, setUser] = useState<any>(null);
@@ -19,7 +20,25 @@ const Creation = () => {
   const [description, setDescription] = useState("");
   const [cards, setCards] = useState([{ term: "", definition: "" }]);
   const [tier, setTier] = useState(subscriptionType.free);
-  
+
+  // Modal for non premium users
+  const [openUpgradeModal, setOpenUpgradeModal] = useState<boolean>(false);
+
+  // Handle Upload Content click
+  const handleUploadContentClick = () => {
+    if (tier === subscriptionType.pro) {
+      setOpenModal(true);
+    } else {
+      setOpenUpgradeModal(true);
+    }
+  };
+
+  // Handle confirm upgrade
+  const handleConfirmUpgrade = () => {
+    setOpenUpgradeModal(false);
+    router.push("/subscribe?subType=Pro");
+  };
+
   // RAG Modal
   const [openModal, setOpenModal] = useState<boolean>(false);
   // GenAI Modal
@@ -39,27 +58,25 @@ const Creation = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   firebaseAuth.onAuthStateChanged((currentUser) => {
-    if(user === null)
-      setUser(currentUser);
+    if (user === null) setUser(currentUser);
   });
 
   // Grab User Data
   useEffect(() => {
-    if (user === null)
-      return;
+    if (user === null) return;
 
-    const getUserData = async() => {
-      await fetch(`/api/user/${user.uid}`, {method: "GET"})
-      .then(response => response.json())
-      .then(data => data.body)
-      .then(body => {
-        setTier(body.tier)
-        console.log(body.tier)
-      });
-    }
+    const getUserData = async () => {
+      await fetch(`/api/user/${user.uid}`, { method: "GET" })
+        .then((response) => response.json())
+        .then((data) => data.body)
+        .then((body) => {
+          setTier(body.tier);
+          console.log(body.tier);
+        });
+    };
 
     getUserData();
-  }, [])
+  }, []);
 
   // Add Card
   const handleAddCard = () => {
@@ -87,8 +104,7 @@ const Creation = () => {
   };
 
   const createNewDeck = async () => {
-    if(user === null)
-      router.push("/signin");
+    if (user === null) router.push("/signin");
 
     const headers = {
       method: "POST",
@@ -99,21 +115,21 @@ const Creation = () => {
         title: title,
         description: description,
         cards: cards,
-        associatedUserId: user.uid
-      })
-    }
+        associatedUserId: user.uid,
+      }),
+    };
     await fetch("/api/deck", headers)
-    .then(response => {
-      if (response.status === 200)
-        router.push("/dashboard");
-    })
-    .catch(e => {
-      console.log("Error Creating deck");
-      
-    })
-  }
+      .then((response) => {
+        if (response.status === 200) router.push("/dashboard");
+      })
+      .catch((e) => {
+        console.log("Error Creating deck");
+      });
+  };
 
-  const handleAddCards = (cardToAddArray: Array<{term:string, definition:string}>) => {
+  const handleAddCards = (
+    cardToAddArray: Array<{ term: string; definition: string }>
+  ) => {
     // const cardToAdd = {
     //   term: term,
     //   definition: definition
@@ -151,8 +167,6 @@ const Creation = () => {
 
       // Add Flashcards to card state
       handleAddCards(result.flashcards);
-
-
     } catch (error) {
       setSuccessMessage(null);
       setErrorMessage("Failed to generate flashcards. Please try again.");
@@ -333,7 +347,10 @@ const Creation = () => {
           <div className="font-bold md:text-3xl text-2xl">
             Create a new flashcard set
           </div>
-          <button onClick={createNewDeck} className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
+          <button
+            onClick={createNewDeck}
+            className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg"
+          >
             Create
           </button>
         </div>
@@ -421,22 +438,60 @@ const Creation = () => {
           </Modal>
 
           {/* Upload content restricted to Pro Users */}
-          {tier === subscriptionType.pro ? (
-            <button 
-                onClick={() => setOpenModal(true)}
-                className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md"
-              >
-                Upload Content
-              </button>            
-          ) : (
-            <button disabled
-                onClick={() => setOpenModal(true)}
-                className="bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md"
-              >
-                Upload Content
-              </button>   
-          )}
- 
+          <button
+            onClick={handleUploadContentClick}
+            className={`${
+              tier === subscriptionType.pro
+                ? "bg-white shadow-lg hover:bg-orange3 hover:text-white text-orange1 border border-orange1 lg:px-8 px-6 py-3 transition duration-500 rounded-md"
+                : "bg-gray-300 text-gray-500 border border-gray-300 lg:px-8 px-6 py-3 rounded-md cursor-not-allowed"
+            }`}
+          >
+            Upload Content
+          </button>
+
+          {/* Upgrade Confirmation Modal */}
+          <Modal
+            open={openUpgradeModal}
+            onClose={() => setOpenUpgradeModal(false)}
+          >
+            <div className="flex flex-col justify-center items-center p-6 md:w-[500px] w-full">
+              {/* Header with Icon */}
+              <div className="flex flex-col items-center mb-4">
+                <FaExclamationTriangle className="text-orange1 text-4xl" />
+                <div className="text-2xl font-bold text-gray-800 mt-2">
+                  Upgrade Required
+                </div>
+              </div>
+
+              {/* Content with Explanation */}
+              <div className="mb-4 text-center text-gray-600">
+                <div>
+                  The feature you&apos;re trying to access is exclusive to Pro
+                  users. Unlock advanced features and more by upgrading your
+                  account.
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-center gap-4 w-full">
+                <button
+                  onClick={() => setOpenUpgradeModal(false)}
+                  className="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md transition-all duration-300"
+                >
+                  <FaTimes className="w-5 h-5 mr-2" />
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmUpgrade}
+                  className="flex items-center bg-orange1 hover:bg-orange1/80 text-white px-4 py-2 rounded-md transition-all duration-300 shadow-lg"
+                >
+                  <FaArrowUp className="w-5 h-5 mr-2" />
+                  Upgrade
+                </button>
+              </div>
+            </div>
+          </Modal>
+
           {/* Rag Implementation */}
           <Modal open={openModal} onClose={() => setOpenModal(false)}>
             <div className="flex flex-col justify-center items-center p-6 md:w-[500px] aspect-square">
@@ -510,7 +565,10 @@ const Creation = () => {
         </button>
         {/* Create Deck*/}
         <div className="flex justify-end w-full mb-10">
-          <button onClick={createNewDeck} className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg">
+          <button
+            onClick={createNewDeck}
+            className="bg-orange1 hover:bg-orange1/80 text-white lg:px-8 px-6 py-3 transition duration-500 rounded-md shadow-lg"
+          >
             Create
           </button>
         </div>
