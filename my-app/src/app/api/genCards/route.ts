@@ -97,6 +97,7 @@ export async function POST(request: Request) {
 
     console.log("Flashcards Generated:", responseMessage);
     const jsonObj = JSON.parse(responseMessage);
+    
     return new Response(
       // Parse response message into object
       JSON.stringify({
