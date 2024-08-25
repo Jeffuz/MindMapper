@@ -18,18 +18,18 @@ const Deck_card = ({ id, title, subtitle, amount }: any) => {
 
   return (
     <div
-      className="flex flex-col justify-between bg-teal2 rounded-lg 
-    shadow-lg p-5 aspect-video hover:brightness-125 transition-all duration-200"
+      className="flex flex-col justify-between bg-teal3 rounded-lg 
+    shadow-lg p-5 aspect-video"
     >
       {/* Titles */}
       <div className="flex flex-col">
         {/* title */}
-        <div className="text-xl font-bold">{title}</div>
+        <div className="text-xl font-bold text-white">{title}</div>
         {/* Subtitle */}
-        <div className="text-gray-700">{subtitle}</div>
+        <div className="text-white">{subtitle}</div>
       </div>
       {/* Card Amount */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 text-white">
         <LuBookOpen size={25} />
         <div>{amount}</div>
       </div>
@@ -37,14 +37,14 @@ const Deck_card = ({ id, title, subtitle, amount }: any) => {
       <div className="w-full flex justify-between md:flex-row flex-col gap-3">
         <button
           onClick={handleClickOpen}
-          className="w-full md:w-[70%] bg-orange1 hover:bg-orange-600/80 py-2 text-white 
+          className="w-full md:w-[70%] bg-orange1 hover:bg-orange1/80 py-2 text-white 
         rounded-lg shadow-lg transition duration-200"
         >
           Open Deck
         </button>
         <button
           onClick={handleClickEdit}
-          className="w-full md:w-[30%] hover:bg-white rounded-lg transition duration-200"
+          className="w-full md:w-[30%] hover:bg-white rounded-lg transition duration-200 text-white hover:text-black"
         >
           Edit
         </button>

@@ -17,7 +17,6 @@ const pricing = () => {
       description: "Unlock more features",
       features: [
         "Unlimited flashcards",
-        "Detailed progress tracking",
         "High quality AI-generated flashcards",
       ],
       status: "Subscribe",
@@ -29,7 +28,6 @@ const pricing = () => {
       features: [
         "Create unlimited flashcards",
         "High quality AI-generated flashcards",
-        "Advanced analytics and progress insights",
         "AI-generated flashcards based on your content",
         "Early access to new features",
       ],
