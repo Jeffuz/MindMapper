@@ -6,19 +6,34 @@ import { useRouter } from "next/navigation";
 import { firebaseAuth } from "../utils/firebase";
 import { FaSignOutAlt } from "react-icons/fa";
 import { LuWalletCards } from "react-icons/lu";
-
+import { MdAccountCircle } from "react-icons/md";
+import { subscriptionType } from "../utils/subscriptionType";
 
 const Navbar = ({ role }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [userTier, setUserTier] = useState<subscriptionType | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = firebaseAuth.onAuthStateChanged((currentUser) => {
+    const unsubscribe = firebaseAuth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+
+        // fetch use tier
+        try {
+          const response = await fetch(`/api/user/${currentUser.uid}`, {
+            method: "GET",
+          });
+          const data = await response.json();
+          setUserTier(data.body.tier);
+        } catch (error) {
+          console.error("Error fetching user tier:", error);
+        }
       } else {
         setUser(null);
+        setUserTier(null);
       }
     });
 
@@ -32,6 +47,10 @@ const Navbar = ({ role }: any) => {
     } catch (error) {
       console.error("Error signing out:", error);
     }
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
@@ -103,6 +122,7 @@ const Navbar = ({ role }: any) => {
                 : "opacity-0 -translate-x-full gap-5" // default
             } bg-teal3 absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out lg:mt-0 lg:p-0 lg:top-0 lg:relative lg:bg-transparent lg:w-auto lg:opacity-100 lg:translate-x-0 lg:flex lg:items-center`}
           >
+            {/* if logged in */}
             {user ? (
               <>
                 <Link href="/dashboard">
@@ -110,14 +130,34 @@ const Navbar = ({ role }: any) => {
                     <LuWalletCards size={28} />
                   </button>
                 </Link>
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center mt-4 lg:mt-0 text-white hover:text-orange1/80 p-2 rounded-full transition duration-300"
-                >
-                  <FaSignOutAlt size={28} />
-                </button>
+                <div className="relative">
+                  <button
+                    onClick={toggleDropdown}
+                    className="flex items-center mt-4 lg:mt-0 text-white hover:text-orange1/80 p-2 rounded-full transition duration-300 focus:outline-none"
+                  >
+                    <MdAccountCircle size={32} />
+                  </button>
+                  {/* Drop down menu for tier + logout */}
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                      <div className="px-4 py-2 text-sm text-gray-700">
+                        Tier:{" "}
+                        <span className="font-semibold">
+                          {userTier || "Loading..."}
+                        </span>
+                      </div>
+                      <div
+                        onClick={handleSignOut}
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                      >
+                        <FaSignOutAlt className="mr-2" /> Sign Out
+                      </div>
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
+              // not logged in
               <>
                 <button className="flex items-center mt-4 lg:mt-0 text-white hover:bg-white hover:text-orange1/80 px-4 py-2 rounded-md transition duration-300">
                   <Link href="/signin">Sign In</Link>
