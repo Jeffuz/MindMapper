@@ -19,8 +19,7 @@ const Creation = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [cards, setCards] = useState([{ term: "", definition: "" }]);
-  const [tier, setTier] = useState(subscriptionType.free);
-
+  const [tier, setTier] = useState<subscriptionType | null>(null);
   // Modal for non premium users
   const [openUpgradeModal, setOpenUpgradeModal] = useState<boolean>(false);
 
@@ -63,20 +62,20 @@ const Creation = () => {
 
   // Grab User Data
   useEffect(() => {
-    if (user === null) return;
-
-    const getUserData = async () => {
-      await fetch(`/api/user/${user.uid}`, { method: "GET" })
-        .then((response) => response.json())
-        .then((data) => data.body)
-        .then((body) => {
-          setTier(body.tier);
-          console.log(body.tier);
-        });
-    };
-
-    getUserData();
-  }, []);
+    if (user) {
+      const getUserData = async () => {
+        try {
+          const response = await fetch(`/api/user/${user.uid}`, { method: "GET" });
+          const data = await response.json();
+          setTier(data.body.tier);
+          console.log(tier);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      };
+      getUserData();
+    }
+  }, [user]);
 
   // Add Card
   const handleAddCard = () => {
