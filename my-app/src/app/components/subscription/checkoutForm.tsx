@@ -83,11 +83,12 @@ export default function CheckoutForm() {
   };
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
-
+    <form id="payment-form" onSubmit={handleSubmit} className="flex flex-col justify-center">
       <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <button disabled={isLoading || !stripe || !elements} id="submit">
-        <span id="button-text">
+
+      <button disabled={isLoading || !stripe || !elements} id="submit" className="w-full align-center mt-5 px-10 md:w-[70%] bg-teal1 hover:bg-orange-600/80 py-2 text-white 
+        rounded-lg shadow-lg transition duration-200">
+        <span id="button-text" >
           {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
         </span>
       </button>
