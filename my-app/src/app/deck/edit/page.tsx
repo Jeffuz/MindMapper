@@ -79,10 +79,10 @@ export default function Page() {
   };
 
   useEffect(() => {
-    console.log(isAuth, user);
+    // console.log(isAuth, user);
 
     if (isAuth && user !== null) {
-      console.log("GETTING USER DATA", user);
+      // console.log("GETTING USER DATA", user);
 
       getUserDeck(user.uid);
     }
