@@ -86,7 +86,7 @@ export default function Dashboard() {
   } else {
     return (
       <>
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col min-h-screen bg-teal2">
           <Navbar />
           {/* Title + Add Deck */}
           <div className="flex md:justify-between md:flex-row md:gap-0 gap-5 flex-col w-full py-12 px-5 md:px-12">

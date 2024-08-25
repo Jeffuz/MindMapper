@@ -20,7 +20,7 @@ const why = () => {
     },
     {
       symbol: <GrPlan size={45}/>,
-      title: "Tailored Study Plans",
+      title: "Tailored Study Plans (Coming Soon...)",
       description:
         "Stay on track with personalized study plans that adapt to your progress. MindMapper helps you prioritize your study time and ensures you're always prepared for exams or important presentations.",
     },

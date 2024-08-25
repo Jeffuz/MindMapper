@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { CiCircleCheck } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 
@@ -20,8 +20,13 @@ const PricingCards: React.FC<PricingCardProps> = ({
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/subscribe?subType=${tier}`)
-  }
+    if (tier === "Free") {
+      router.push("/signup");
+    } else {
+      router.push(`/subscribe?subType=${tier}`);
+    }
+  };
+
   return (
     <div className="bg-white flex flex-col justify-between rounded-lg p-10 shadow-lg gap-16">
       {/* details */}
@@ -55,8 +60,10 @@ const PricingCards: React.FC<PricingCardProps> = ({
       </div>
       {/* button */}
       <div>
-        <button onClick={handleClick}
-        className="bg-orange1 hover:bg-orange1/80 text-white transition duration-500 py-3 px-8 rounded-md shadow-lg">
+        <button
+          onClick={handleClick}
+          className="bg-orange1 hover:bg-orange1/80 text-white transition duration-500 py-3 px-8 rounded-md shadow-lg"
+        >
           {status}
         </button>
       </div>

@@ -17,7 +17,7 @@ const features = () => {
     },
     {
       symbol: <TbChartBar size={45}/>,
-      title: "Advanced Analytics",
+      title: "Advanced Analytics (Coming Soon...)",
       description:
         "Track your progress with detailed analytics that show your strengths, weaknesses, and areas for improvement.",
     },
